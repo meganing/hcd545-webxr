@@ -32,6 +32,11 @@ jobs:
       - run: npm run build
         env:
           COMMIT_SHA: ${{ github.sha }}   # shown in the page footer (vite.config.js keeps the first 7 characters)
+      # A1: build the a1 folder into dist/a1, so it is served at https://USER.github.io/REPO/a1/
+      - run: npm ci --prefix a1
+      - run: npm run build --prefix a1 -- --outDir ../dist/a1 --emptyOutDir
+        env:
+          COMMIT_SHA: ${{ github.sha }}
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
