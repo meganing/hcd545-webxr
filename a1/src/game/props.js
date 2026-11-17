@@ -56,7 +56,7 @@ const BUILD = {
     const shade = mesh(new THREE.CylinderGeometry(0.2, 0.27, 0.34, 28, 1, true), mat(0xf3e6c4, { side: THREE.DoubleSide, emissive: 0x3a3320 }), 0, 1.42, 0);
     g.add(shade);
     const front = plaque(o.front || 'A'); front.position.set(0, 1.42, 0.245); g.add(front);      // faces the lobby: the same in both rooms
-    const side = plaque(o.side || 'A'); side.position.set(-0.255, 1.42, 0); side.rotation.y = -Math.PI / 2; g.add(side);   // the hidden side: faces -x
+    const side = plaque(o.side || 'A', 0.3); side.position.set(-0.255, 1.42, 0); side.rotation.y = -Math.PI / 2; g.add(side);   // the hidden side: faces -x
     return g;
   },
   plant() {

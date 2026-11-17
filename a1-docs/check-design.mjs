@@ -67,7 +67,7 @@ for (const d of R.REAL) {
     const [sx, sz] = R.PAD_SPOTS[i];
     const a = angularSize(o.g, standCam(sx, sz));
     let facing = true;
-    if (d.viewFrom) { const dx = sx - o.g.position.x, dz = sz - o.g.position.z, len = Math.hypot(dx, dz); facing = (dx * d.viewFrom[0] + dz * d.viewFrom[1]) / len >= 0.5; }
+    if (d.viewFrom) { const dx = sx - o.g.position.x, dz = sz - o.g.position.z, len = Math.hypot(dx, dz); facing = (dx * d.viewFrom[0] + dz * d.viewFrom[1]) / len >= 0.8; }
     if (a.min >= 3 && a.distance <= 4.6 && facing) seenFrom.push(R.PAD_NAMES[i]);
   }
   ok(seenFrom.length > 0, `${d.id}: no pad sees it`);

@@ -272,5 +272,5 @@ startOverlay({
 });
 
 window.hcd = { renderer, scene, camera, rig, look, stereo, comfort, fps, settings, caps, panel, env, adapt,   // handy in the console
-  gaze, audio, captions, input, trial, menu, pads, padsGame, padsStarter, seated, safe, badge, mine: mine3d,
+  gaze, audio, captions, input, trial, menu, get pads() { return pads; }, padsGame, padsStarter, seated, safe, badge, mine: mine3d,
   angularSize: (obj) => angularSize(obj, camera), angularSizes: () => angularSizes(gaze, camera) };

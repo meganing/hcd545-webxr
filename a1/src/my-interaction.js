@@ -73,13 +73,13 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     const d = DIFFS.find((x) => x.id === e.id);
     if (d?.counts) {
       found.add(e.id); sinceFind = 0;
-      captions.say(`Found: ${d.say} (${found.size} of ${TOTAL})`, 4);
+      captions.say(`[chime] Found: ${d.say} (${found.size} of ${TOTAL})`, 4);
       setTimeout(() => audio.ping(), 200);   // a second chime: the first one comes from main.js for every activation
       paintAll();
       if (found.size === TOTAL) finish();
     } else {
       wrong++; ruledOut.add(e.id);
-      captions.say(d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`, 4);
+      captions.say(d ? `[chime] Not a difference: ${d.say}` : `[chime] ${e.label}: the same in both rooms`, 4);
     }
     refresh();
   }
@@ -96,7 +96,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     board.mesh.visible = active && state !== 'play';
     if (state === 'start') board.show({ title: `Find ${TOTAL} differences`, lines: [
       `Rooms A and B differ in ${TOTAL} things.`, 'Look at a green pad to go there.', 'Look at a thing to flag it.',
-      'Turned, moved or lit differently: the same thing.', 'Bigger or smaller counts.'] });
+      'Bigger, smaller or missing counts. Flag a missing thing where it still stands.', 'Only turned, moved or lit: not a difference.'] });
     if (state === 'end') board.show({ title: `All ${TOTAL} found!`, lines: [`Time ${clockText(elapsed)}`, `Wrong flags: ${wrong}`, 'Look at Play again, or Restart below.'] });
     paintAll();
   }
@@ -170,7 +170,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       camera.getWorldPosition(_a);
       const now = roomAt(_a.x, _a.z);
       if (now !== room) { room = now; refresh(); api.onRoom?.(room); }
-      if (state === 'play' && !gaze.paused) {
+      if (active && state === 'play' && !gaze.paused) {
         elapsed += dt; sinceFind += dt;
         if (sinceFind >= HINT_AFTER) { sinceFind = 0; hint(); }
       }
@@ -180,7 +180,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
         // face the viewer; found rings pulse unless reduced motion is on
         const pulse = settings.reducedMotion ? 1 : 1 + 0.06 * Math.sin(t * 4);
         camera.getWorldQuaternion(_q);
-        rings.forEach((r) => { if (r.visible) { r.quaternion.copy(_q); r.scale.setScalar(Math.max(entryRadius(r), 0.2) * (found.has(r.userData.id) ? pulse : 1)); } });
+        rings.forEach((r) => { if (r.visible) { r.quaternion.copy(_q); r.scale.setScalar(Math.max(entryRadius(r), 0.2) * settings.targetScale * (found.has(r.userData.id) ? pulse : 1)); } });
       }
     },
   };

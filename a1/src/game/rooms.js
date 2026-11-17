@@ -74,8 +74,8 @@ export const PAD_NAMES = ['Room A: front', 'Room A: back left', 'Room A: back ri
 export const PAD_ROOM = ['A', 'A', 'A', 'B', 'B', 'B', 'lobby'];
 // Which pads you can see (and teleport to) from each pad. Short hops only: a pad far away would be smaller than 3 degrees.
 export const PAD_LINKS = [
-  [1, 2, 3, 6], [0, 2, 6], [0, 1, 6],
-  [4, 5, 0, 6], [3, 5, 6], [3, 4, 6],
+  [1, 2, 3, 6], [0, 2], [0, 1],
+  [4, 5, 0, 6], [3, 5], [3, 4],
   [0, 3],
 ];
 

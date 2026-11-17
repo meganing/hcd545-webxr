@@ -63,7 +63,7 @@ Open `src/game/rooms.js` or the named file, edit, save, check in the browser. De
 | Request | Where | Edit |
 |---|---|---|
 | New default dwell time | `src/settings.js` | `dwell: 1.2` to the new number |
-| A sixth difference | `src/game/rooms.js` `DIFFS` | change the `counts` of a decoy to `true` and give it a real `set` (for example `chair`: `set: { color: '#e91e63' }`); `TOTAL` updates itself |
+| A sixth difference | `src/game/rooms.js` `DIFFS` | add a real change, for example on `vase`: `{type:'resize', counts:true, set:{scale:1.5}, say:'The vase is bigger'}`. `TOTAL` updates itself, but `check-design.mjs` and `smoke-test.mjs` hard-code 5: change those too. The chair ignores colour, so do not use it for a recolor |
 | Make a decoy real | `rooms.js` | `counts: true` on that entry |
 | Add an object | `rooms.js` `OBJECTS` | copy a line, new `id`, `kind`, `x`, `z`; give it `proxy` and `cy` |
 | Change the hint time | `src/my-interaction.js` | `const HINT_AFTER = 25` |
@@ -93,3 +93,14 @@ After any change to the room data, run `node a1-docs/check-design.mjs` in a term
 - First-time tester time.
 - Device test record: at least 3 device/browser classes with date, mode, result, screenshot.
 - Comfort defaults and the reason from your Lab 2 tests.
+
+
+## If you change a default
+- `settings.js` defaults only apply to a browser with no saved settings.
+- After editing a default, press Reset settings in the panel, or clear this site's localStorage, then reload.
+
+## Ship it (yours to do, I did not push anything)
+- Commit on branch `a1`, push it, and merge to `main`: the workflow runs only on pushes to `main`.
+- Check the live URL ends in `/a1/`, and note that the repo is `hcd545-lab1`, not `hcd545-webxr`.
+- Tag the final commit `a1-final` if the course asks for it.
+- Run `python3 a1-docs/make_submission.py firstname_lastname` after the PDF is final.

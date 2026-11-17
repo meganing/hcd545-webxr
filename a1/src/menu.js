@@ -153,7 +153,7 @@ export function createPads({ scene, gaze, comfort, spots = [[-3, -1], [2.5, 1.5]
   let current = pads[pads.length - 1];
   let enabled = true;   // false hides every pad (the game's pads while the starter's scene is shown, and the reverse)
   function sync() { const cur = pads.indexOf(current); pads.forEach((p, i) => { p.visible = enabled && p !== current && (canShow ? canShow(i, cur) : true); }); }
-  function applyScale() { pads.forEach((p) => p.scale.set(settings.targetScale, 1, settings.targetScale)); }
+  function applyScale() { const k = canShow ? Math.max(1, settings.targetScale) : settings.targetScale; pads.forEach((p) => p.scale.set(k, 1, k)); }
   onChange((k) => { if (k === 'targetScale') applyScale(); });
   sync(); applyScale();
   return {

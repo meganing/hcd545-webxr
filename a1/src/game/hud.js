@@ -59,9 +59,9 @@ export class Board {
     g.strokeStyle = hi ? '#ffffff' : '#ff9800'; g.lineWidth = 10; g.strokeRect(5, 5, 1014, 630);
     g.fillStyle = hi ? '#ffeb3b' : '#ffcc80'; g.font = 'bold 76px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'top';
     g.fillText(title, 512, 40, 960);
-    g.fillStyle = '#ffffff'; g.font = '50px sans-serif'; g.textAlign = 'left';
+    g.fillStyle = '#ffffff'; g.font = '46px sans-serif'; g.textAlign = 'left';
     let y = 150;
-    for (const text of lines) for (const l of wrap(g, text, 930)) { g.fillText(l, 48, y); y += 62; }
+    for (const text of lines) for (const l of wrap(g, text, 930)) { g.fillText(l, 48, y); y += 56; }
     this.tex.needsUpdate = true;
   }
 }

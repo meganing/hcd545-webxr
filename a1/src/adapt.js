@@ -38,7 +38,7 @@ export function applyAdaptations({ renderer }) {
 // 1. Pixel ratio 1.5 instead of min(devicePixelRatio, 2): 44 % fewer pixels to shade (2.25 against 4 per CSS pixel).
 // 2. Antialiasing off on dense phones: at this pixel ratio the edges are already fine and MSAA costs fill rate.
 // 3. Shadow map 1024 on phone-size touch screens: a quarter of the shadow texels to render and sample.
-// 4. Canvas textures (picture, plaques, labels) at half size on phone-size touch screens: less texture memory to upload.
+// 4. Canvas textures (the picture and plaques in props.js) at half size on phone-size touch screens: less texture memory to upload.
 export function platformProfile() {
   const q = new URLSearchParams(window.location.search);
   const mq = (s) => { try { return window.matchMedia(s).matches; } catch { return false; } };

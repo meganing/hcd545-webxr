@@ -21,9 +21,9 @@ Each question has a short model answer and where to open the code. Cover the ans
 12. **Where is IPD applied in code?** `stereo.js setIpd` and `effect.setEyeSeparation`; the `ipd` setting change calls it from `main.js onChange`.
 13. **Why is the phone's screen split in two?** Cardboard viewers: each lens sees one half. Viewer fit draws each eye as a square under its lens.
 14. **What does the headset do differently?** The browser draws both eyes itself; `main.js` turns StereoEffect off on `sessionstart`.
-15. **Which depth cues does your game use?** Pictorial (relative size, overlap, shadows, texture of the floor grid), motion parallax from teleporting, binocular disparity in stereo (strongest at 0.5 to 3 m).
+15. **Which depth cues does your game use?** Pictorial (relative size, overlap, shadows, texture of the floor grid), binocular disparity in stereo (strongest at 0.5 to 3 m).
 16. **Why must a resize difference be 35 percent or more?** Under that, a person cannot tell a smaller object from one that is simply farther, because size and distance are confounded in one image.
-17. **Why is "looks bigger because it is nearer" a decoy?** Distance changes the image size without changing the object.
+17. **Why is a turned chair not a difference?** Turning, moving or lighting an object leaves the object the same; only a changed colour, size, picture or missing thing counts.
 18. **Vergence-accommodation conflict: where does it touch your design?** Text and targets are 1 to 3 m away, not close to the face, so the focus distance of the screen and the vergence distance disagree less.
 
 ## C. Comfort
@@ -97,7 +97,7 @@ Each question has a short model answer and where to open the code. Cover the ans
 67. **How are the differences defined?** `DIFFS` in `rooms.js`. Room B is room A plus these changes (`buildRoom('B')`).
 68. **What is a decoy and why have them?** A change that does not make the object different (turned, moved, lit differently). They teach the rule that an object is the same if it is the same thing, and stop people flagging everything.
 69. **Why is a "missing" difference flagged in room A?** The object only exists there. The ring then circles the empty spot in room B.
-70. **How does the lamp's hidden side work?** Its side plaque faces -x; room A says A, room B says B (`props.js lamp`). Only seen from the left back pad.
+70. **How does the lamp's hidden side work?** Its side plaque faces -x; room A says A, room B says B (`props.js lamp`). Plaque is large (0.3 m) and faces -x, so it is read from the left side; the check script finds only the back-left pad qualifies.
 71. **How does Target size reach your objects?** `applyScale()` in `my-interaction.js` runs on start and on `onChange('targetScale')`. It scales the proxies and the 3D buttons.
 72. **How does the game know you are in room A?** `roomAt(x, z)` on the camera world position each frame.
 73. **Why not let people walk freely?** Smooth walking is the main sickness trigger and hard by gaze. Teleport pads are safer and also make the game easier to finish. In a headset physical walking still works because the room comes from the head position.

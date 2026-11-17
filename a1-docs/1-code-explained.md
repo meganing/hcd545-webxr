@@ -1,6 +1,6 @@
 # 1. Code explained: the VR principles in my A1 project
 
-Read this once, then use it to answer "where is that in your code?". File names are in `a1/src/`. Every claim here was checked against the code.
+Read this once, then use it to answer "where is that in your code?". File names are in `a1/src/`. The code claims were read against the code; nothing here was run in a real browser or headset.
 
 ## How to use this document
 
@@ -38,7 +38,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 
 ## 1. Platform detection (capability, not browser name)
 
-- **What it is**: ask the browser what it can do. Never read `navigator.userAgent`.
+- **What it is**: ask the browser what it can do. Never decide behaviour from `navigator.userAgent`. (`capabilities.js` reads it only for a display label.)
 - **Where**: `main.js`, near the end: `navigator.xr.isSessionSupported('immersive-vr').then(ok => ...)` creates the ENTER VR button only if `ok`. Also `look.js requestPermission()` tests `DeviceOrientationEvent.requestPermission` (exists on iPhone only). `adapt.js platformProfile()` uses `matchMedia('(pointer: coarse)')`, `screen.width` and `devicePixelRatio`.
 - **How it works**:
   - No `navigator.xr` (laptop Safari, many phones): no button, the page still works in mono and stereo.
@@ -115,7 +115,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - `_rotate` turns about the head, not the rig origin, so a standing user does not swing sideways.
   - Teleport: `teleportTo(point)` starts a state machine: tunnel closes (0.15 s), fade to black (0.1 s), `_moveHeadTo` moves the **rig** so the head is above the point, then everything reverses. No continuous movement, so no vection.
   - Why: vection (the feeling of moving without the body moving) is the main trigger of sickness. Teleport has none.
-- **My own values**: `my-comfort.js` still holds the starter defaults. Put your Lab 2 results and a reason on every line. **This is yours to fill.**
+- **My own values**: `my-comfort.js` holds three profiles (sensitive, comfortable, intense), each with a reason. The reasons are drafts. Run `4-comfort-lab2.md`, then replace each "My test:" line with what you felt. **This is yours to fill.**
 
 ## 8. Audio and captions
 
@@ -126,7 +126,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Browsers keep the `AudioContext` suspended until a user gesture, so `audio.start()` is called inside the Start click.
   - Sound is off by default. `settings.audio` toggles `play()` and `pause()`.
   - Mine, `hintAt(obj)`: adds one `PositionalAudio` (a 520 Hz ping) to the target object, plays it, and returns a caption `[hint ping, ahead and to the left, 3 m]` from `describe()`. The bearing text uses `worldToLocal` and `atan2`.
-  - Every sound has a caption: the chime (`[chime] label`), the hum (`describe()`), the hint (caption). The game is finishable with sound off.
+  - Every sound has a caption: the chime (`[chime] ...` is the start of the caption, so a deaf player is told a sound happened), the hum (`describe()`), the hint (caption). The game is finishable with sound off.
 
 ## 9. Accessibility settings (saved)
 
@@ -143,7 +143,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Every flaggable object has an invisible box (the proxy) of at least 0.32 m (`MIN_PROXY` in `rooms.js`). At Target size 0.8 that is 0.256 m, so it still passes at 4.5 m.
   - Only the objects of the room you are in are in `gaze.targets` (`refresh()` in `my-interaction.js`). Objects in the other room would be too small.
   - The lobby is view-only while playing. The starter menu and speaker are hidden outside the lobby (`syncFixtures` in `main.js`), for the same reason.
-  - The check script measures the real proxies from every pad: smallest object 7.5 degrees; smallest pad link 3.2 degrees; Begin button 23 x 9 degrees.
+  - The check script measures the real proxies from every pad: smallest object 7.5 degrees; smallest pad link about 3 degrees (the back pads no longer link to the lobby; the Target size setting never goes below 1 for pads); Begin button 23 x 9 degrees.
 - **In the browser**: open the console, stand at a pad, run `hcd.angularSizes()`. Every row must say `ok: true`.
 
 ## 11. Performance and platform adaptations
