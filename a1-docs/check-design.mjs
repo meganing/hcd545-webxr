@@ -83,7 +83,7 @@ for (let i = 0; i < R.PAD_SPOTS.length; i++) {
     if (a.min < 3.5) console.log(`  close: ${R.PAD_NAMES[i]} -> ${R.PAD_NAMES[j]} ${a.min} deg`);
   }
 }
-// (links need not be two-way: you can go from a back pad to Home, but Home only offers the two room entrances)
+// (links need not be two-way: the front pads link to Home, the back pads do not, and Home only offers the two room entrances)
 // reachability from Home
 const seen = new Set([6]); const q = [6]; while (q.length) for (const j of R.PAD_LINKS[q.shift()]) if (!seen.has(j)) { seen.add(j); q.push(j); }
 ok(seen.size === R.PAD_SPOTS.length, 'some pad cannot be reached from Home');
