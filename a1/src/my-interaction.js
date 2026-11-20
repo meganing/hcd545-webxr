@@ -96,7 +96,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     setButton(again, here && state === 'end');
     board.mesh.visible = active && state !== 'play';
     if (state === 'start') board.show({ title: `Find ${TOTAL} differences`, lines: [
-      `Rooms A and B differ in ${TOTAL} things.`, 'Look at a green pad to go there.', 'Look at a thing to flag it.',
+      `Rooms A and B differ in ${TOTAL} things.`, 'Look at a gold pad to go there.', 'Look at a thing to flag it.',
       'Bigger, smaller or missing counts. Flag a missing thing where it still stands.', 'Only turned, moved or lit: not a difference.'] });
     if (state === 'end') board.show({ title: `All ${TOTAL} found!`, lines: [`Time ${clockText(elapsed)}`, `Wrong flags: ${wrong}`, 'Look at Play again, or Restart below.'] });
     paintAll();
@@ -122,7 +122,8 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
   function start() {
     found.clear(); ruledOut.clear(); wrong = 0; elapsed = 0; sinceFind = 0; endTimer = 0;
     state = 'play';
-    captions.say(`Find ${TOTAL} differences. Look at a green pad, then at things in the room.`, 5);
+    api.onStart?.();   // main.js stops the starter's gaze trial, so its pink ball cannot appear in the game
+    captions.say(`Find ${TOTAL} differences. Look at a gold pad, then at things in the room.`, 5);
     refresh();
   }
   function finish() {

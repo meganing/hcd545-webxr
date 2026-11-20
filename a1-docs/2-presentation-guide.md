@@ -29,7 +29,7 @@ The demo is in person. You bring a laptop and a phone. **No AI assistant during 
 | 1:00 | Press Stereo. Then Exit stereo. Say the time. | "Stereo is one function call, no reload, well under 2 seconds." |
 | 1:30 | Open Settings. Move IPD to 55, 64, 70 mm. | "IPD is the distance between the two eye cameras. It scales the world." |
 | 2:00 | Look at Begin (by dragging the view to it). Let the ring fill. | "Everything from here is dwell: the ring is the progress, 0.6 s re-arm after each fire." |
-| 2:30 | Look at the green pad of room A, then at objects. Flag a decoy (the chair). | "Turned is not a difference, so I get a caption that says why, and a Wrong count." |
+| 2:30 | Look at the gold pad of room A, then at objects. Flag a decoy (the chair). | "Turned is not a difference, so I get a caption that says why, and a Wrong count." |
 | 3:30 | Flag real differences. Turn sound off and show the hint caption. | "The hint is a positional ping plus a caption, so it works with sound off." |
 | 5:00 | Finish the game. Show the end board. Press Restart in the dock (look down). | "Restart calls `reset()` through safe.js." |
 | 5:30 | Phone: open the URL. Allow motion on iPhone. Look around by moving the phone. Stereo. | "On iPhone the permission step must be inside the Start click." |

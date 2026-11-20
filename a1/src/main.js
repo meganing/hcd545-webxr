@@ -119,6 +119,7 @@ function syncFixtures() {
   Object.values(menu.buttons).forEach((b) => { b.group.visible = on; });   // a hidden parent does not stop the gaze ray: hide the targets themselves
 }
 mine3d.onRoom = syncFixtures;
+mine3d.onStart = () => trial.stop();
 function applyCues() {
   const mode = CUE_MODES[cueIndex()], game = mode === 'game';
   env.setCues(mode);
@@ -264,7 +265,7 @@ renderer.setAnimationLoop((now) => {              // not requestAnimationFrame: 
 startOverlay({
   title: 'Spot the difference',
   lines: [
-    'Two rooms look the same, but 5 things differ. Walk between them by looking at the green pads, and flag what you find by looking at it until the ring fills.',
+    'Two rooms look the same, but 5 things differ. Walk between them by looking at the gold pads, and flag what you find by looking at it until the ring fills.',
     'Move your phone to look around, or drag with finger or mouse. After Start you need no key, touch or controller. Use headphones for the 3D sound; it also works with sound off.',
     'Look down to find Pause, Restart and Exit at any time.',
   ],
