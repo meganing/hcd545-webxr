@@ -40,7 +40,7 @@ export const DIFFS = [
   { id: 'plant',   type: 'resize',  counts: true,  set: { scale: 1.45 },      say: 'The plant is bigger in room B' },
   { id: 'picture', type: 'replace', counts: true,  set: { art: 'mountains2' }, say: 'The sun in the picture is on the other side' },
   { id: 'clock',   type: 'missing', counts: true,  remove: true,              say: 'The clock is missing in room B' },
-  { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#ecd0c4' },  say: 'The lamp shade is a shade pinker in room B' },
+  { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#e6b9bd' },  say: 'The lamp shade is pink in room B' },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
   { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },
@@ -68,7 +68,7 @@ const local = (room, x, z) => [ROOM_CENTERS[room].x + x, ROOM_CENTERS[room].z + 
 export const PAD_SPOTS = [local('A', 0, 0.35), local('B', 0, 0.35), [0, 0]];   // one pad per room, and Home
 export const PAD_NAMES = ['Room A', 'Room B', 'Lobby'];
 export const PAD_ROOM = ['A', 'B', 'lobby'];
-// Which pads you can see (and teleport to) from each pad. The two rooms are 5.2 m apart: a pad that far away is still bigger than 3 degrees (check-design.mjs).
+// Which pads are shown (and can be looked at) from each pad. A wall may still hide one in the other room: the lobby pad is the way between rooms. The two rooms are 5.2 m apart: a pad that far away is still bigger than 3 degrees (check-design.mjs).
 export const PAD_LINKS = [
   [1, 2], [0, 2],
   [0, 1],

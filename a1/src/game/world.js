@@ -66,7 +66,7 @@ function decorate(group, plank) {
   });
   for (let i = 0; i < 9; i++) add(new THREE.SphereGeometry(0.035, 8, 6), glowMat, -1.8 + i * 0.45, WALL_H - 0.12 - Math.sin((i / 8) * Math.PI) * -0.0 - (i % 2) * 0.06, -ROOM_D / 2 + 0.06);
   // one warm light per room (no shadows: cheap on phones), so the room feels lit from a lamp and the window
-  const warm = new THREE.PointLight(0xffc27a, 7, 6.5, 2); warm.position.set(0, 2.1, 0.2); group.add(warm);
+  const warm = new THREE.PointLight(0xffc27a, 7, 6.5, 2); warm.position.set(0, 2.1, 0.2); group.parent.add(warm);   // on the room, not in `contents`: hiding a room's things must not change the light count (that would recompile shaders)
   // corner plants (front corners, away from the objects)
   for (const x of [-1.8, 1.8]) { add(new THREE.CylinderGeometry(0.13, 0.1, 0.2, 14), new THREE.MeshStandardMaterial({ color: 0xb5651d }), x, 0.14, 1.6); add(new THREE.SphereGeometry(0.2, 14, 10), leafMat, x, 0.42, 1.6); }
 }

@@ -181,11 +181,11 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Pressure and cost: 120 s clock, a wrong flag costs 8 s, so guessing is not free.
   - Reward: 100 points per find times a combo of 1, 2 or 3 (finds in a row with no wrong flag), plus 2 points per second left. Best score is saved in `localStorage` (`hcd545-webxr-a1-best`, in try/catch).
   - Soft failure: running out of time reveals what you missed and Play again restarts at once.
-  - The research behind it was light: articles on change blindness, flow, short replayable sessions and streaks, so treat it as a design rationale and not evidence. The differences are kept small but fair (mug red to orange, sun on the other side of the picture, a shade pinker lamp, plant +45 percent).
+  - The research behind it was light: articles on change blindness, flow, short replayable sessions and streaks, so treat it as a design rationale and not evidence. The differences are kept small but fair (mug red to orange, sun on the other side of the picture, a pink lamp shade, plant +45 percent).
 - **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: true` and moved toward the viewer by its radius, so walls and the board hide it. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.
 - **Hint**: after 25 s without a find, `hint()` picks the nearest unfound difference (preferring your room) and calls `audio.hintAt()`. If it is in the other room the caption names the room.
 - **Targets per room**: `refresh()` adds or removes each proxy from `gaze.targets`. `update()` detects the room from the head position with `roomAt(x, z)`, so a person who really walks in a headset gets the right targets too.
-- **Pads**: `createPads` in `menu.js` got options (`spots`, `radius`, `names`, `canShow`, `onArrive`). The defaults keep the starter's behaviour. The game passes its own spots and a link table (`PAD_LINKS`) so only nearby pads are visible and big enough.
+- **Pads**: `createPads` in `menu.js` got options (`spots`, `radius`, `names`, `canShow`, `onArrive`). The defaults keep the starter's behaviour. The game passes its own spots and a link table (`PAD_LINKS`) so only pads that are big enough from where you stand are shown (the lobby pad and, from the lobby, both rooms).
 
 ## 13. What I changed in starter files (be able to list this)
 

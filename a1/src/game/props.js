@@ -24,14 +24,6 @@ const mesh = (geo, material, x = 0, y = 0, z = 0) => {
   return m;
 };
 
-function plaque(letter, size = 0.16) {
-  const tex = canvasTex(128, 128, (g, w, h) => {
-    g.fillStyle = '#1b2a55'; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#ffffff'; g.font = 'bold 96px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(letter, w / 2, h / 2 + 6);
-  });
-  return new THREE.Mesh(new THREE.PlaneGeometry(size, size), new THREE.MeshBasicMaterial({ map: tex }));
-}
 
 const ARTS = {
   mountains: (g, w, h) => {

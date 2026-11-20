@@ -125,14 +125,15 @@ export function createPads({ scene, gaze, comfort, spots = [[-3, -1], [2.5, 1.5]
   scene.add(group);
   const pads = spots.map(([x, z], i) => {
     const pad = new THREE.Group();
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 40), new THREE.MeshStandardMaterial(canShow ? { color: 0xf2c879, emissive: 0x5a3a10 } : { color: 0x1de9b6, emissive: 0x0a5a48 }));   // the game's pads are warm gold (they sit on the rug); the starter's stay teal
+    const BASE = canShow ? 0xf2c879 : 0x1de9b6, GLOW = canShow ? 0x5a3a10 : 0x0a5a48;   // the game's pads are warm gold; the starter's stay teal
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 40), new THREE.MeshStandardMaterial({ color: BASE, emissive: GLOW }));
     const rim = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.03, 8, 40).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff }));
     let hover = false;
     // Contrast mode: yellow pad with a thick black rim (white when hovered) instead of teal with a white rim.
     const paint = () => {
       const hi = settings.contrast;
-      disc.material.color.setHex(hover ? (hi ? 0xffffff : 0xffee58) : (hi ? 0xffeb3b : 0x1de9b6));
-      disc.material.emissive.setHex(hi ? 0x000000 : 0x0a5a48);
+      disc.material.color.setHex(hover ? (hi ? 0xffffff : 0xffee58) : (hi ? 0xffeb3b : BASE));
+      disc.material.emissive.setHex(hi ? 0x000000 : GLOW);
       rim.material.color.setHex(hi ? 0x000000 : 0xffffff);
       rim.scale.set(1, hi ? 3 : 1, 1);
     };
