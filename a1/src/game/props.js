@@ -51,7 +51,7 @@ const ARTS = {
 const BUILD = {
   lamp(o) {
     const g = new THREE.Group();
-    g.add(mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.04, 24), mat(0x3b3b3b), 0, 0.02, 0));
+    { const base = mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.04, 24), mat(0x3b3b3b), 0, 0.02, 0); base.receiveShadow = false; g.add(base); }   // thin: it would shadow itself and shimmer
     g.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.2, 12), mat(0x3b3b3b), 0, 0.64, 0));
     const shade = mesh(new THREE.CylinderGeometry(0.2, 0.27, 0.34, 28, 1, true), mat(0xf3e6c4, { side: THREE.DoubleSide, emissive: 0x3a3320 }), 0, 1.42, 0);
     g.add(shade);

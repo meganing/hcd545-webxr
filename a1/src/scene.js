@@ -38,9 +38,9 @@ export function createEnvironment(scene, { shadowMap = 2048 } = {}) {   // A1: s
   const sun = new THREE.DirectionalLight(0xffffff, 2.0);   // the sun: one directional light, aimed at the origin
   sun.position.set(4, 8, 3);
   sun.shadow.mapSize.set(shadowMap, shadowMap);
-  Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 0.5, far: 30 });
+  Object.assign(sun.shadow.camera, { left: -11, right: 11, top: 11, bottom: 11 * -1, near: 0.5, far: 30 });   // A1: tighter than the starter's 16 m, so each shadow texel is smaller (thin things like the lamp base stop shimmering)
   sun.shadow.bias = -0.0005;
-  sun.shadow.normalBias = 0.02;
+  sun.shadow.normalBias = 0.04;
   scene.add(sun);
   const castAndReceive = (obj) => obj.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
 
