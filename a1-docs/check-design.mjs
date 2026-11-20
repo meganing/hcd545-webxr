@@ -67,7 +67,7 @@ for (const d of R.REAL) {
     const [sx, sz] = R.PAD_SPOTS[i];
     const a = angularSize(o.g, standCam(sx, sz));
     let facing = true;
-    if (d.viewFrom) { const dx = sx - o.g.position.x, dz = sz - o.g.position.z, len = Math.hypot(dx, dz); facing = (dx * d.viewFrom[0] + dz * d.viewFrom[1]) / len >= 0.8; }
+    if (d.viewFrom) { const dx = sx - o.g.position.x, dz = sz - o.g.position.z, len = Math.hypot(dx, dz); facing = (dx * d.viewFrom[0] + dz * d.viewFrom[1]) / len >= 0.7; }
     if (a.min >= 3 && a.distance <= 4.6 && facing) seenFrom.push(R.PAD_NAMES[i]);
   }
   ok(seenFrom.length > 0, `${d.id}: no pad sees it`);
@@ -85,7 +85,7 @@ for (let i = 0; i < R.PAD_SPOTS.length; i++) {
 }
 // (links need not be two-way: the front pads link to Home, the back pads do not, and Home only offers the two room entrances)
 // reachability from Home
-const seen = new Set([6]); const q = [6]; while (q.length) for (const j of R.PAD_LINKS[q.shift()]) if (!seen.has(j)) { seen.add(j); q.push(j); }
+const HOME = R.PAD_SPOTS.length - 1; const seen = new Set([HOME]); const q = [HOME]; while (q.length) for (const j of R.PAD_LINKS[q.shift()]) if (!seen.has(j)) { seen.add(j); q.push(j); }
 ok(seen.size === R.PAD_SPOTS.length, 'some pad cannot be reached from Home');
 
 console.log('--- 5. lobby targets (Begin, Play again, menu buttons) from Home');

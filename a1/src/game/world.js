@@ -15,11 +15,61 @@ function signTexture(text) {
   return t;
 }
 
-const wallMat = new THREE.MeshStandardMaterial({ color: 0xd9d4c7, roughness: 1 });
-const floorMat = new THREE.MeshStandardMaterial({ color: 0x9b7b57, roughness: 0.9 });
+const wallMat = new THREE.MeshStandardMaterial({ color: 0x9db8a8, roughness: 1 });       // soft sage, like the cosy diorama references
+const trimMat = new THREE.MeshStandardMaterial({ color: 0x5b3f2a, roughness: 0.8 });     // dark wood: skirting, window frame, shelf
+const floorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });    // colour comes from the plank texture
+const rugMat = new THREE.MeshStandardMaterial({ color: 0x5fa04e, roughness: 1 });
+const leafMat = new THREE.MeshStandardMaterial({ color: 0x3f9142, roughness: 0.9 });
+const glowMat = new THREE.MeshBasicMaterial({ color: 0xffe9a8 });                        // window light and bulbs: unlit, so they glow
+
+function plankTexture(scale) {
+  const w = Math.round(512 * scale), h = Math.round(512 * scale);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); const n = 8, ph = h / n;
+  for (let i = 0; i < n; i++) {
+    const l = 42 + ((i * 37) % 11); g.fillStyle = `hsl(28, 38%, ${l}%)`; g.fillRect(0, i * ph, w, ph);
+    g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, i * ph, w, Math.max(1, h / 170));            // the gap between planks
+    const cut = ((i * 211) % 7 + 1) / 8 * w; g.fillRect(cut, i * ph, Math.max(1, w / 170), ph);
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+// Decoration only: the same in both rooms, never a gaze target, never a difference.
+function decorate(group, plank) {
+  const add = (geo, mat, x, y, z, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = m.receiveShadow = true; group.add(m); return m; };
+  floorMat.map = plank; floorMat.needsUpdate = true;
+  add(new THREE.CylinderGeometry(1.0, 1.0, 0.012, 40), rugMat, 0.1, 0.046, 0.15);                  // round green rug in the middle
+  // skirting boards
+  add(new THREE.BoxGeometry(ROOM_W, 0.12, 0.04), trimMat, 0, 0.06, -ROOM_D / 2 + 0.02);
+  add(new THREE.BoxGeometry(0.04, 0.12, ROOM_D), trimMat, -ROOM_W / 2 + 0.02, 0.06, 0);
+  add(new THREE.BoxGeometry(0.04, 0.12, ROOM_D), trimMat, ROOM_W / 2 - 0.02, 0.06, 0);
+  // a window on the left wall: glowing panes in a dark frame
+  const wx = -ROOM_W / 2 + 0.02;
+  add(new THREE.BoxGeometry(0.03, 0.95, 0.75), glowMat, wx, 1.45, 0.3);
+  for (const [h, w, y, z] of [[0.06, 0.85, 1.95, 0.3], [0.06, 0.85, 0.95, 0.3], [0.95, 0.06, 1.45, -0.1], [0.95, 0.06, 1.45, 0.7], [0.95, 0.05, 1.45, 0.3]]) add(new THREE.BoxGeometry(0.06, h, w), trimMat, wx + 0.01, y, z);
+  add(new THREE.BoxGeometry(0.05, 0.05, 0.85), trimMat, wx + 0.01, 1.45, 0.3);
+  // two wall shelves on the back wall with books and a small plant
+  const bz = -ROOM_D / 2 + 0.12;
+  add(new THREE.BoxGeometry(0.8, 0.04, 0.22), trimMat, 1.15, 1.75, bz);
+  add(new THREE.BoxGeometry(0.8, 0.04, 0.22), trimMat, 1.15, 2.1, bz);
+  [[0xb23a48, 0.9], [0x2f6f9f, 0.97], [0xd9a441, 1.03], [0x3f9142, 1.1]].forEach(([c, x], i) => add(new THREE.BoxGeometry(0.05, 0.2 - i * 0.015, 0.14), new THREE.MeshStandardMaterial({ color: c }), x + 0.02, 1.87 - i * 0.008, bz));
+  add(new THREE.CylinderGeometry(0.07, 0.055, 0.1, 12), new THREE.MeshStandardMaterial({ color: 0xb5651d }), 1.35, 2.17, bz);
+  add(new THREE.SphereGeometry(0.1, 12, 10), leafMat, 1.35, 2.3, bz);
+  // vines hanging from the top of the side walls, and a string of lights along the back wall
+  for (const side of [-1, 1]) for (let i = 0; i < 6; i++) {
+    const m = add(new THREE.SphereGeometry(0.1 + (i % 3) * 0.02, 10, 8), leafMat, side * (ROOM_W / 2 - 0.1), WALL_H - 0.1 - (i % 4) * 0.18, -1.2 + i * 0.55);
+    m.scale.y = 1.5;
+  }
+  for (let i = 0; i < 9; i++) add(new THREE.SphereGeometry(0.035, 8, 6), glowMat, -1.8 + i * 0.45, WALL_H - 0.12 - Math.sin((i / 8) * Math.PI) * -0.0 - (i % 2) * 0.06, -ROOM_D / 2 + 0.06);
+  // one warm light per room (no shadows: cheap on phones), so the room feels lit from a lamp and the window
+  const warm = new THREE.PointLight(0xffc27a, 7, 6.5, 2); warm.position.set(0, 2.1, 0.2); group.add(warm);
+  // corner plants (front corners, away from the objects)
+  for (const x of [-1.8, 1.8]) { add(new THREE.CylinderGeometry(0.13, 0.1, 0.2, 14), new THREE.MeshStandardMaterial({ color: 0xb5651d }), x, 0.14, 1.6); add(new THREE.SphereGeometry(0.2, 14, 10), leafMat, x, 0.42, 1.6); }
+}
 
 export function buildWorld({ texScale = 1 } = {}) {
   setTextureScale(texScale);
+  const plank = plankTexture(texScale);
   const root = new THREE.Group();
   const rooms = {};   // rooms.A.objects: Map id -> { id, label, room, spec, group, proxy, center, radius }
 
@@ -40,6 +90,7 @@ export function buildWorld({ texScale = 1 } = {}) {
     wall(0.1, WALL_H, ROOM_D, ROOM_W / 2 + 0.05, 0);           // right
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ map: signTexture(`ROOM ${name}`) }));
     sign.position.set(0, WALL_H + 0.3, ROOM_D / 2); group.add(sign);   // above the open front, readable from the lobby
+    decorate(group, plank);
 
     for (const s of SCENERY) { const t = buildProp({ ...s, y: 0 }); group.add(t); }
 

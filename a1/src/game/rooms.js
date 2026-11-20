@@ -14,7 +14,7 @@ export const PAD_RADIUS = 0.7;
 // A proxy is never smaller than MIN_PROXY, because a target must cover at least 3 degrees from 4.5 m (0.24 m; 0.32 m leaves room for Target size 0.8).
 export const MIN_PROXY = 0.32;
 export const OBJECTS = [
-  { id: 'lamp',    label: 'Lamp',    kind: 'lamp',    x: 1.6,   z: -1.4,  y: 0,    front: 'A', side: 'A', proxy: [0.5, 1.55, 0.5], cy: 0.78 },
+  { id: 'lamp',    label: 'Lamp',    kind: 'lamp',    x: 1.6,   z: -1.4,  y: 0,    front: 'A', proxy: [0.5, 1.55, 0.5], cy: 0.78 },
   { id: 'plant',   label: 'Plant',   kind: 'plant',   x: -1.6,  z: -1.4,  y: 0,    scale: 1, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
   { id: 'vase',    label: 'Vase',    kind: 'vase',    x: -1.55, z: 1.1,   y: 0,    proxy: [0.34, 0.6, 0.34], cy: 0.3 },
   { id: 'chair',   label: 'Chair',   kind: 'chair',   x: 1.5,   z: 1.1,   y: 0,    rotY: 0.25, proxy: [0.55, 0.95, 0.55], cy: 0.47 },
@@ -30,7 +30,7 @@ export const OBJECTS = [
 export const SCENERY = [{ kind: 'table', x: 0, z: -1.35 }];
 
 // The answer key. counts: true = a real difference; false = a decoy that looks different but is the same thing.
-//   recolor / replace / resize / hidden : the same object, changed (set: the properties that change in room B)
+//   recolor / replace / resize : the same object, changed (set: the properties that change in room B)
 //   missing                               : the object is not in room B (flag it in room A)
 //   added                                 : the object exists only in room B (add: a full object entry)
 //   rotate / move / light                 : decoys (turned, moved, lit differently)
@@ -40,7 +40,7 @@ export const DIFFS = [
   { id: 'plant',   type: 'resize',  counts: true,  set: { scale: 1.45 },      say: 'The plant is bigger in room B' },
   { id: 'picture', type: 'replace', counts: true,  set: { art: 'waves' },     say: 'A different picture' },
   { id: 'clock',   type: 'missing', counts: true,  remove: true,              say: 'The clock is missing in room B' },
-  { id: 'lamp',    type: 'hidden',  counts: true,  set: { side: 'B' },        say: 'The lamp says B on its side', viewFrom: [-1, 0] },
+  { id: 'lamp',    type: 'replace', counts: true,  set: { front: 'B' },       say: 'The lamp tag says B', viewFrom: [0, 1] },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
   { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },
@@ -65,18 +65,13 @@ export function buildRoom(room) {
 
 // Teleport pads, in order. The last one is Home (the lobby): menu.js treats the last spot as Home.
 const local = (room, x, z) => [ROOM_CENTERS[room].x + x, ROOM_CENTERS[room].z + z];
-export const PAD_SPOTS = [
-  local('A', 0, 1.0), local('A', -1.1, -0.35), local('A', 1.1, -0.35),
-  local('B', 0, 1.0), local('B', -1.1, -0.35), local('B', 1.1, -0.35),
-  [0, 0],
-];
-export const PAD_NAMES = ['Room A: front', 'Room A: back left', 'Room A: back right', 'Room B: front', 'Room B: back left', 'Room B: back right', 'Lobby'];
-export const PAD_ROOM = ['A', 'A', 'A', 'B', 'B', 'B', 'lobby'];
-// Which pads you can see (and teleport to) from each pad. Short hops only: a pad far away would be smaller than 3 degrees.
+export const PAD_SPOTS = [local('A', 0, 0.35), local('B', 0, 0.35), [0, 0]];   // one pad per room, and Home
+export const PAD_NAMES = ['Room A', 'Room B', 'Lobby'];
+export const PAD_ROOM = ['A', 'B', 'lobby'];
+// Which pads you can see (and teleport to) from each pad. The two rooms are 5.2 m apart: a pad that far away is still bigger than 3 degrees (check-design.mjs).
 export const PAD_LINKS = [
-  [1, 2, 3, 6], [0, 2], [0, 1],
-  [4, 5, 0, 6], [3, 5], [3, 4],
-  [0, 3],
+  [1, 2], [0, 2],
+  [0, 1],
 ];
 
 // Which room is a point in? (The head position: it also works when a headset user physically walks.)

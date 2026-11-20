@@ -55,8 +55,7 @@ const BUILD = {
     g.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.2, 12), mat(0x3b3b3b), 0, 0.64, 0));
     const shade = mesh(new THREE.CylinderGeometry(0.2, 0.27, 0.34, 28, 1, true), mat(0xf3e6c4, { side: THREE.DoubleSide, emissive: 0x3a3320 }), 0, 1.42, 0);
     g.add(shade);
-    const front = plaque(o.front || 'A'); front.position.set(0, 1.42, 0.245); g.add(front);      // faces the lobby: the same in both rooms
-    const side = plaque(o.side || 'A', 0.3); side.position.set(-0.255, 1.42, 0); side.rotation.y = -Math.PI / 2; g.add(side);   // the hidden side: faces -x
+    const front = plaque(o.front || 'A', 0.26); front.position.set(0, 1.42, 0.245); g.add(front);      // the tag faces the pad and the lobby: room A says A, room B says B
     return g;
   },
   plant() {

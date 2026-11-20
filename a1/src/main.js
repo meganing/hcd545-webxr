@@ -64,7 +64,7 @@ const gaze = new GazeSystem({ renderer, camera });      // reticle, dwell timer,
 const speaker = createSpeaker({ scene, gaze });         // the orange sphere: look at it to mute or unmute
 audio.attach(speaker.mesh);                             // humming PositionalAudio on the speaker
 const padsStarter = createPads({ scene, gaze, comfort });      // the starter's teleport pads (menu.js): shown in the Cues views that are not the game
-const padsGame = createPads({ scene, gaze, comfort, spots: PAD_SPOTS, radius: PAD_RADIUS, names: PAD_NAMES,   // the game's pads: three per room and Home
+const padsGame = createPads({ scene, gaze, comfort, spots: PAD_SPOTS, radius: PAD_RADIUS, names: PAD_NAMES,   // the game's pads: one per room and Home
   canShow: (i, cur) => cur < 0 || PAD_LINKS[cur].includes(i) });
 let pads = padsGame;                                    // the pads of the view that is on screen (home() and Restart use it)
 let presetIndex = 0;

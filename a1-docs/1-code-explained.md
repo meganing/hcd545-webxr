@@ -143,7 +143,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Every flaggable object has an invisible box (the proxy) of at least 0.32 m (`MIN_PROXY` in `rooms.js`). At Target size 0.8 that is 0.256 m, so it still passes at 4.5 m.
   - Only the objects of the room you are in are in `gaze.targets` (`refresh()` in `my-interaction.js`). Objects in the other room would be too small.
   - The lobby is view-only while playing. The starter menu and speaker are hidden outside the lobby (`syncFixtures` in `main.js`), for the same reason.
-  - The check script measures the real proxies from every pad: smallest object 7.5 degrees; smallest pad link about 3 degrees (the back pads no longer link to the lobby; the Target size setting never goes below 1 for pads); Begin button 23 x 9 degrees.
+  - The check script measures the real proxies from every pad: smallest object about 9.6 degrees; every pad link at least 3 degrees (one pad per room plus Home; the Target size setting never goes below 1 for pads); Begin button 23 x 9 degrees.
 - **In the browser**: open the console, stand at a pad, run `hcd.angularSizes()`. Every row must say `ok: true`.
 
 ## 11. Performance and platform adaptations
@@ -173,7 +173,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - `reset()` is called by Restart and Exit through `safe.js` hooks in `main.js`.
 - **Data-driven rooms**: `OBJECTS` is room A. `DIFFS` is the answer key. `buildRoom('B')` copies room A and applies `set`, `remove` or `add`. To change the game, edit `DIFFS`.
 - **Rules** (shown on the start board):
-  - Real (counts): added, missing, replaced, recoloured (also a brightness change), resized by at least 35 percent, a different detail on a hidden side.
+  - Real (counts): added, missing, replaced, recoloured (also a brightness change), resized by at least 35 percent, a different tag on a lamp (A or B).
   - Decoy (does not count): turned, moved, lit differently, looks bigger only because of distance.
   - A wrong flag costs only a "Wrong" count and a caption that says why. There is no hover feedback that gives answers away: every object shows the same white ring when looked at.
 - **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: false` so it shows through objects. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.

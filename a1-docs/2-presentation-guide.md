@@ -42,9 +42,9 @@ The examiner decides the order. If they interrupt, follow them. The table is onl
 ## Gaze-only run (how to do it on a laptop)
 
 - You may drag to aim. Do not click or press keys to activate anything. The ring must fill.
-- Plan a route: Begin > pad Room A front > flag clock (missing in B) > Home pad > pad Room B front > mug, plant, picture > back left pad > lamp. About 2 minutes.
+- Plan a route: Begin > pad Room A > flag clock (missing in B) > pad Room B > mug, plant, picture, lamp. About 2 minutes.
 - Practise the route 5 times with a stopwatch. Your best time and a first-time tester's time go into the report (brief: under 3 minutes for a first-time user).
-- The answers: mug (recoloured), plant (bigger), picture (replaced), clock (missing in B), lamp (side plaque says B, seen from the left back pad). Decoys: chair, vase, lantern.
+- The answers: mug (recoloured), plant (bigger), picture (replaced), clock (missing in B), lamp (tag says B). Decoys: chair, vase, lantern.
 
 ## Failure plans
 
