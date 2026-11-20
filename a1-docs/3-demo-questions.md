@@ -90,7 +90,7 @@ Each question has a short model answer and where to open the code. Cover the ans
 63. **Which device classes did you test and what did you reach?** **(own data)** a class is one device type with one engine.
 64. **What did you not test?** Be specific: headset, hand tracking, and so on. "Not tested" is valid.
 65. **What failed during testing and what did you change?** **(own data)**
-66. **How long does a first-time user take?** **(own data)** target under 3 minutes. The hint appears after 25 s without a find.
+66. **How long does a first-time user take?** **(own data)** target under 3 minutes; the clock is 120 s, so a player who runs out still ends before 3 minutes. The hint appears after 25 s without a find.
 
 ## I. Game design and code reading
 
@@ -120,3 +120,11 @@ Each question has a short model answer and where to open the code. Cover the ans
 - Why `base: './'` in `vite.config.js`? The build works from a GitHub Pages sub-path.
 - What is `__COMMIT__`? The short commit hash injected by Vite, shown in the footer, to prove which commit is deployed.
 - Why HTTPS? Phone motion sensors and WebXR need a secure context.
+
+## K. Game design (added after playtesting)
+
+90. **Why can you only see one room at a time?** With both rooms open from the lobby the task is trivial: look left, look right. Hiding the room you are not in makes you compare from memory (change blindness) and gives the teleport pads a real purpose. `refresh()` in `my-interaction.js` toggles each room's `contents` group.
+91. **What does a wrong flag cost, and why?** 8 s (`WRONG_COST`) and the combo. Without a cost, looking at everything is the best strategy.
+92. **How is the score worked out?** 100 per find times a combo of 1 to 3, plus 2 per second left when all five are found. Best score is in `localStorage`.
+93. **What happens when time runs out?** `finish(false)`: the missed differences get orange rings, the board shows the score and a rank, and Play again restarts at once.
+94. **Did you test this on players?** **(own data)** Say what you did and saw. The design came from reading about change blindness and casual-game loops, which is a rationale, not a test.

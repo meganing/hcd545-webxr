@@ -16,6 +16,15 @@ import { DIFFS, REAL, TOTAL, ROOM_CENTERS, roomAt, clockText } from './game/room
 // Why targets are switched per room: a target must cover 3 degrees of view from where the visitor uses it, so only the objects of the
 // room you stand in can be targets (hcd.angularSizes() then lists only targets that pass).
 const HINT_AFTER = 25;   // seconds without a find before the hint (the 3-minute goal needs it)
+// Game feel (why: a short clock, a cost for guessing and a streak turn "find five things" into "do it faster and cleaner").
+const TIME_LIMIT = 120;      // seconds; a first-time player still finishes under 3 minutes
+const WRONG_COST = 8;        // seconds lost for a wrong flag: guessing is not free
+const FIND_POINTS = 100;     // x1, x2, x3 for a streak of finds with no wrong flag in between
+const TIME_BONUS = 2;        // points per second left when all are found
+const BEST_KEY = 'hcd545-webxr-a1-best';
+const loadBest = () => { try { return Number(localStorage.getItem(BEST_KEY)) || 0; } catch { return 0; } };
+const saveBest = (v) => { try { localStorage.setItem(BEST_KEY, String(v)); } catch { /* private mode: the best score is just not kept */ } };
+const rankFor = (pts, won) => (!won ? 'Keep looking' : pts >= 650 ? 'Eagle eyes' : pts >= 450 ? 'Sharp' : 'Got there');
 
 export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texScale = 1 }) {
   const world = buildWorld({ texScale });
@@ -27,8 +36,8 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
 
   // ---- state ---------------------------------------------------------------------------------------------------------------
   let state = 'start', active = true, room = 'lobby';
-  let wrong = 0, elapsed = 0, sinceFind = 0, endTimer = 0;
-  const found = new Set(), ruledOut = new Set();   // ids; a difference counts in both rooms
+  let wrong = 0, elapsed = 0, sinceFind = 0, endTimer = 0, streak = 0, score = 0, won = false, best = loadBest(), newBest = false;
+  const found = new Set(), ruledOut = new Set(), missed = new Set();   // missed: shown at the end when time runs out   // ids; a difference counts in both rooms
 
   // ---- rings: a circle that always faces the viewer. White while you look at an object, green once it is a found difference ----
   const entries = [...world.rooms.A.objects.values(), ...world.rooms.B.objects.values()];
@@ -48,10 +57,10 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     }
   }
   function paintRing(ring) {
-    const isFound = found.has(ring.userData.id);
-    ring.visible = isFound || ring.userData.hover;
-    ring.material.color.setHex(isFound ? (settings.contrast ? 0xffeb3b : 0x00e676) : 0xffffff);
-    ring.material.opacity = isFound ? 1 : 0.55;
+    const isFound = found.has(ring.userData.id), isMissed = missed.has(ring.userData.id);
+    ring.visible = (isFound || isMissed || ring.userData.hover) && world.rooms[ring.userData.room].contents.visible;   // no ring around something you cannot see
+    ring.material.color.setHex(isMissed ? 0xffa000 : isFound ? (settings.contrast ? 0xffeb3b : 0x00e676) : 0xffffff);
+    ring.material.opacity = isFound || isMissed ? 1 : 0.55;
   }
   const paintAll = () => rings.forEach(paintRing);
 
@@ -73,14 +82,15 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     if (state !== 'play') return;
     const d = DIFFS.find((x) => x.id === e.id);
     if (d?.counts) {
-      found.add(e.id); sinceFind = 0;
-      captions.say(`[chime] Found: ${d.say} (${found.size} of ${TOTAL})`, 4);
+      found.add(e.id); sinceFind = 0; streak++;
+      const mult = Math.min(streak, 3); score += FIND_POINTS * mult;
+      captions.say(`[chime] Found: ${d.say} (${found.size} of ${TOTAL})${mult > 1 ? `  combo x${mult}` : ''}`, 4);
       setTimeout(() => audio.ping(), 200);   // a second chime: the first one comes from main.js for every activation
       paintAll();
-      if (found.size === TOTAL) finish();
+      if (found.size === TOTAL) finish(true);
     } else {
-      wrong++; ruledOut.add(e.id);
-      captions.say(d ? `[chime] Not a difference: ${d.say}` : `[chime] ${e.label}: the same in both rooms`, 4);
+      wrong++; ruledOut.add(e.id); streak = 0; elapsed += WRONG_COST;
+      captions.say(`[chime] ${d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`}  (-${WRONG_COST} s)`, 4);
     }
     refresh();
   }
@@ -95,10 +105,15 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     setButton(begin, here && state === 'start');
     setButton(again, here && state === 'end');
     board.mesh.visible = active && state !== 'play';
+    // One room at a time: while playing you only see the things in the room you stand in, so you compare from memory.
+    // At the start and the end both rooms are open (a preview, then the reveal).
+    for (const name of ['A', 'B']) world.rooms[name].contents.visible = active && (state !== 'play' || room === name);
     if (state === 'start') board.show({ title: `Find ${TOTAL} differences`, lines: [
-      `Rooms A and B differ in ${TOTAL} things.`, 'Look at a gold pad to go there.', 'Look at a thing to flag it.',
-      'Bigger, smaller or missing counts. Flag a missing thing where it still stands.', 'Only turned, moved or lit: not a difference.'] });
-    if (state === 'end') board.show({ title: `All ${TOTAL} found!`, lines: [`Time ${clockText(elapsed)}`, `Wrong flags: ${wrong}`, 'Look at Play again, or Restart below.'] });
+      `Find ${TOTAL} differences in ${TIME_LIMIT / 60} minutes.`, 'You see one room at a time. Remember it!', 'Look at a gold pad to go in. Look at a thing to flag it.',
+      'Bigger, smaller, new colour or missing counts.', `Turned, moved or lit: no. A wrong flag costs ${WRONG_COST} s.`] });
+    if (state === 'end') board.show({ title: won ? `All ${TOTAL} found!` : `Time's up: ${found.size} of ${TOTAL}`, lines: [
+      `Score ${score}${newBest ? '  (new best!)' : `   Best ${best}`}`, `${rankFor(score, won)}.  Wrong flags: ${wrong}`,
+      won ? `Time left ${clockText(Math.max(0, TIME_LIMIT - elapsed))}` : 'Orange rings: what you missed.', 'Look at Play again, or Restart below.'] });
     paintAll();
   }
 
@@ -120,19 +135,23 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
 
   // ---- the state machine --------------------------------------------------------------------------------------------------------
   function start() {
-    found.clear(); ruledOut.clear(); wrong = 0; elapsed = 0; sinceFind = 0; endTimer = 0;
+    found.clear(); ruledOut.clear(); missed.clear(); wrong = 0; elapsed = 0; sinceFind = 0; endTimer = 0; streak = 0; score = 0; won = false; newBest = false;
     state = 'play';
     api.onStart?.();   // main.js stops the starter's gaze trial, so its pink ball cannot appear in the game
     captions.say(`Find ${TOTAL} differences. Look at a gold pad, then at things in the room.`, 5);
     refresh();
   }
-  function finish() {
+  function finish(didWin) {
+    won = didWin;
+    if (won) score += Math.max(0, Math.round(TIME_LIMIT - elapsed)) * TIME_BONUS;
+    else for (const d of REAL) if (!found.has(d.id)) missed.add(d.id);
+    if (score > best) { best = score; newBest = score > 0; saveBest(best); }
     state = 'end'; endTimer = 2.5;
-    captions.say(`All ${TOTAL} found in ${clockText(elapsed)}. Back to the lobby...`, 3);
+    captions.say(won ? `All ${TOTAL} found. Score ${score}. Back to the lobby...` : `Time's up: ${found.size} of ${TOTAL}. Back to the lobby...`, 3);
   }
   // The reset path: put the experience back to its first state (called by safe.js through main.js; also in the console: hcd.mine.reset()).
   function reset() {
-    state = 'start'; found.clear(); ruledOut.clear(); wrong = 0; elapsed = 0; sinceFind = 0; endTimer = 0;
+    state = 'start'; found.clear(); ruledOut.clear(); missed.clear(); wrong = 0; elapsed = 0; sinceFind = 0; endTimer = 0; streak = 0; score = 0; won = false; newBest = false;
     refresh();
   }
 
@@ -163,7 +182,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
 
   const api = {
     root: world.root, reset, start, hint,
-    get state() { return state; }, get room() { return room; }, get found() { return [...found]; }, get wrong() { return wrong; },
+    get state() { return state; }, get room() { return room; }, get found() { return [...found]; }, get wrong() { return wrong; }, get score() { return score; }, get timeLeft() { return TIME_LIMIT - elapsed; },
     onRoom: null,        // main.js sets this: it shows the starter's menu and speaker only in the lobby
     flagId: (id, r) => flag(world.rooms[r || 'B'].objects.get(id) || world.rooms.A.objects.get(id)),   // console / test helper
     // Game view on or off (the Cues button: the first view is the game, the others are the starter's scale-cue scene).
@@ -175,10 +194,11 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       if (active && state === 'play' && !gaze.paused) {
         elapsed += dt; sinceFind += dt;
         if (sinceFind >= HINT_AFTER) { sinceFind = 0; hint(); }
+        if (elapsed >= TIME_LIMIT) finish(false);
       }
       if (endTimer > 0) { endTimer -= dt; if (endTimer <= 0) { pads.home(); } }
       if (active) {
-        hud.set(state !== 'play' ? '' : `Found ${found.size}/${TOTAL}  ·  Wrong ${wrong}  ·  ${clockText(elapsed)}`);
+        hud.set(state !== 'play' ? '' : `Found ${found.size}/${TOTAL}  ·  ${clockText(Math.max(0, TIME_LIMIT - elapsed))} left  ·  ${score} pts${streak > 1 ? `  x${Math.min(streak, 3)}` : ''}`);
         // face the viewer; found rings pulse unless reduced motion is on
         const pulse = settings.reducedMotion ? 1 : 1 + 0.06 * Math.sin(t * 4);
         camera.getWorldQuaternion(_q);

@@ -18,7 +18,7 @@ export const OBJECTS = [
   { id: 'plant',   label: 'Plant',   kind: 'plant',   x: -1.6,  z: -1.4,  y: 0,    scale: 1, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
   { id: 'vase',    label: 'Vase',    kind: 'vase',    x: -1.55, z: 1.1,   y: 0,    proxy: [0.34, 0.6, 0.34], cy: 0.3 },
   { id: 'chair',   label: 'Chair',   kind: 'chair',   x: 1.5,   z: 1.1,   y: 0,    rotY: 0.25, proxy: [0.55, 0.95, 0.55], cy: 0.47 },
-  { id: 'mug',     label: 'Mug',     kind: 'mug',     x: 0.3,   z: -1.35, y: 0.75, color: '#b71c1c', proxy: [0.32, 0.32, 0.32], cy: 0.08 },
+  { id: 'mug',     label: 'Mug',     kind: 'mug',     x: 0.3,   z: -1.35, y: 0.75, color: '#c62828', proxy: [0.32, 0.32, 0.32], cy: 0.08 },
   { id: 'lantern', label: 'Lantern', kind: 'lantern', x: -0.3,  z: -1.35, y: 0.75, lit: false, proxy: [0.32, 0.34, 0.32], cy: 0.1 },
   { id: 'picture', label: 'Picture', kind: 'picture', x: 0.0,   z: -1.76, y: 1.5,  art: 'mountains', proxy: [0.85, 0.6, 0.14], cy: 0 },
   { id: 'clock',   label: 'Clock',   kind: 'clock',   x: -1.2,  z: -1.76, y: 1.85, proxy: [0.36, 0.36, 0.14], cy: 0 },
@@ -36,11 +36,11 @@ export const SCENERY = [{ kind: 'table', x: 0, z: -1.35 }];
 //   rotate / move / light                 : decoys (turned, moved, lit differently)
 // To change the game, edit this list: nothing else needs to change.
 export const DIFFS = [
-  { id: 'mug',     type: 'recolor', counts: true,  set: { color: '#4fc3f7' }, say: 'The mug is a different colour' },
+  { id: 'mug',     type: 'recolor', counts: true,  set: { color: '#ef6c00' }, say: 'The mug is a different colour (red or orange)' },
   { id: 'plant',   type: 'resize',  counts: true,  set: { scale: 1.45 },      say: 'The plant is bigger in room B' },
-  { id: 'picture', type: 'replace', counts: true,  set: { art: 'waves' },     say: 'A different picture' },
+  { id: 'picture', type: 'replace', counts: true,  set: { art: 'mountains2' }, say: 'The sun in the picture is on the other side' },
   { id: 'clock',   type: 'missing', counts: true,  remove: true,              say: 'The clock is missing in room B' },
-  { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#e9b8bd' },  say: 'The lamp shade is pink in room B' },
+  { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#ecd0c4' },  say: 'The lamp shade is a shade pinker in room B' },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
   { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },

@@ -54,5 +54,10 @@ ok(homed === 1, 'after 2.5 s the visitor is sent Home');
 go(0, 0); ok(labels().join() === 'Play again', `lobby at the end shows Play again (${labels()})`);
 game.reset(); ok(game.state === 'start' && game.found.length === 0 && game.wrong === 0, 'reset puts the task back to the start');
 ok(labels().join() === 'Begin', 'Begin is back after reset');
+// the clock: a round with no finds ends when time runs out, and a wrong flag costs time
+game.start(); const t0 = game.timeLeft; game.flagId('chair'); ok(Math.abs(t0 - game.timeLeft - 8) < 0.01, `a wrong flag costs 8 s (${t0} -> ${game.timeLeft})`);
+for (let i = 0; i < 130; i++) game.update(1, 0);
+ok(game.state === 'end' && game.found.length === 0, 'time runs out: the round ends');
+game.reset();
 settings.targetScale = 1.6; game.setActive(false); ok(gaze.targets.length === 0, 'game view off: no game targets');
 console.log(fails ? `\n${fails} FAILED` : '\nSMOKE TEST PASSED'); process.exit(fails ? 1 : 0);

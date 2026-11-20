@@ -67,6 +67,8 @@ Open `src/game/rooms.js` or the named file, edit, save, check in the browser. De
 | Make a decoy real | `rooms.js` | `counts: true` on that entry |
 | Add an object | `rooms.js` `OBJECTS` | copy a line, new `id`, `kind`, `x`, `z`; give it `proxy` and `cy` |
 | Change the hint time | `src/my-interaction.js` | `const HINT_AFTER = 25` |
+| Change the clock or the penalty | `src/my-interaction.js` | `TIME_LIMIT = 120`, `WRONG_COST = 8` |
+| See both rooms at once again | `src/my-interaction.js` `refresh()` | make the `contents.visible` line `active` only |
 | Bigger minimum target | `rooms.js` | `MIN_PROXY = 0.32` to `0.4` |
 | Different comfort default | `src/my-comfort.js` or `settings.js` | `vignette`, `turnMode`, `snapAngle` |
 | Change the re-arm | `src/gaze.js` | `const REARM = 0.6` |

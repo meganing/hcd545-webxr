@@ -168,15 +168,21 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 - **Where**: `my-interaction.js` (logic), `game/rooms.js` (data).
 - **State machine** (the starter's template idea): `start -> play -> end -> reset -> start`.
   - start: board with the rules and a Begin target in the lobby.
-  - play: timer, flags, hint. Only the current room's objects are targets.
-  - end: when the 5th difference is found, wait 2.5 s, teleport Home, show time and wrong flags, show Play again.
+  - play: a 120 s countdown, flags, hint. Only the current room's objects are targets, and only the room you stand in is drawn (see Game feel).
+  - end: when the 5th difference is found or time runs out, wait 2.5 s, teleport Home, show score, best score and rank, show Play again. If time ran out, the missed differences get orange rings.
   - `reset()` is called by Restart and Exit through `safe.js` hooks in `main.js`.
 - **Data-driven rooms**: `OBJECTS` is room A. `DIFFS` is the answer key. `buildRoom('B')` copies room A and applies `set`, `remove` or `add`. To change the game, edit `DIFFS`.
 - **Rules** (shown on the start board):
   - Real (counts): added, missing, replaced, recoloured (also a brightness change), resized by at least 35 percent, a different lamp shade colour.
   - Decoy (does not count): turned, moved, lit differently, looks bigger only because of distance.
-  - A wrong flag costs only a "Wrong" count and a caption that says why. There is no hover feedback that gives answers away: every object shows the same white ring when looked at.
-- **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: false` so it shows through objects. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.
+  - A wrong flag costs 8 s, resets the combo and shows a caption that says why. There is no hover feedback that gives answers away: every object shows the same white ring when looked at.
+- **Game feel** (constants at the top of `my-interaction.js`: `TIME_LIMIT`, `WRONG_COST`, `FIND_POINTS`, `TIME_BONUS`):
+  - One room at a time: `refresh()` sets each room's `contents` group visible only while you stand in it (both are open on the start and end boards). Walls, floor, sign and the gold pad stay. You compare from memory, which is change blindness (a gap between two views hides changes), and it is why the pads matter.
+  - Pressure and cost: 120 s clock, a wrong flag costs 8 s, so guessing is not free.
+  - Reward: 100 points per find times a combo of 1, 2 or 3 (finds in a row with no wrong flag), plus 2 points per second left. Best score is saved in `localStorage` (`hcd545-webxr-a1-best`, in try/catch).
+  - Soft failure: running out of time reveals what you missed and Play again restarts at once.
+  - The research behind it was light: articles on change blindness, flow, short replayable sessions and streaks, so treat it as a design rationale and not evidence. The differences are kept small but fair (mug red to orange, sun on the other side of the picture, a shade pinker lamp, plant +45 percent).
+- **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: true` and moved toward the viewer by its radius, so walls and the board hide it. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.
 - **Hint**: after 25 s without a find, `hint()` picks the nearest unfound difference (preferring your room) and calls `audio.hintAt()`. If it is in the other room the caption names the room.
 - **Targets per room**: `refresh()` adds or removes each proxy from `gaze.targets`. `update()` detects the room from the head position with `roomAt(x, z)`, so a person who really walks in a headset gets the right targets too.
 - **Pads**: `createPads` in `menu.js` got options (`spots`, `radius`, `names`, `canShow`, `onArrive`). The defaults keep the starter's behaviour. The game passes its own spots and a link table (`PAD_LINKS`) so only nearby pads are visible and big enough.

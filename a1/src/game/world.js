@@ -18,7 +18,7 @@ function signTexture(text) {
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x9db8a8, roughness: 1 });       // soft sage, like the cosy diorama references
 const trimMat = new THREE.MeshStandardMaterial({ color: 0x5b3f2a, roughness: 0.8 });     // dark wood: skirting, window frame, shelf
 const floorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });    // colour comes from the plank texture
-const rugMat = new THREE.MeshStandardMaterial({ color: 0x5fa04e, roughness: 1 });
+const rugMat = new THREE.MeshStandardMaterial({ color: 0x9c4a3a, roughness: 1 });
 const leafMat = new THREE.MeshStandardMaterial({ color: 0x3f9142, roughness: 0.9 });
 const glowMat = new THREE.MeshBasicMaterial({ color: 0xffe9a8 });                        // window light and bulbs: unlit, so they glow
 
@@ -38,7 +38,7 @@ function plankTexture(scale) {
 function decorate(group, plank) {
   const add = (geo, mat, x, y, z, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = m.receiveShadow = true; group.add(m); return m; };
   floorMat.map = plank; floorMat.needsUpdate = true;
-  add(new THREE.CylinderGeometry(1.0, 1.0, 0.012, 40), rugMat, 0.1, 0.046, 0.15);                  // round green rug in the middle
+  add(new THREE.BoxGeometry(2.0, 0.012, 0.6), rugMat, 0, 0.046, -0.8);                              // a runner at the back, clear of the teleport pad
   // skirting boards
   add(new THREE.BoxGeometry(ROOM_W, 0.12, 0.04), trimMat, 0, 0.06, -ROOM_D / 2 + 0.02);
   add(new THREE.BoxGeometry(0.04, 0.12, ROOM_D), trimMat, -ROOM_W / 2 + 0.02, 0.06, 0);
@@ -94,14 +94,15 @@ export function buildWorld({ texScale = 1 } = {}) {
     wall(0.1, WALL_H, ROOM_D, ROOM_W / 2 + 0.05, 0);           // right
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ map: signTexture(`ROOM ${name}`) }));
     sign.position.set(0, WALL_H + 0.3, ROOM_D / 2); group.add(sign);   // above the open front, readable from the lobby
-    decorate(group, plank);
+    const contents = new THREE.Group(); group.add(contents);   // everything you can look at: hidden in the rooms you are not standing in (my-interaction.js)
+    decorate(contents, plank);
 
-    for (const s of SCENERY) { const t = buildProp({ ...s, y: 0 }); group.add(t); }
+    for (const s of SCENERY) { const t = buildProp({ ...s, y: 0 }); contents.add(t); }
 
     const objects = new Map();
     for (const spec of buildRoom(name)) {
       const obj = buildProp(spec);
-      group.add(obj);
+      contents.add(obj);
       const [w, h, d] = spec.proxy.map((v) => Math.max(v, MIN_PROXY));
       const proxy = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false }));
       proxy.position.y = spec.cy;           // proxy is a child of the object: it follows resize, turn and move
@@ -110,7 +111,7 @@ export function buildWorld({ texScale = 1 } = {}) {
       const radius = Math.max(w, h, d) * (spec.scale || 1) * 0.62;
       objects.set(spec.id, { id: spec.id, label: spec.label, room: name, spec, group: obj, proxy, center, radius });
     }
-    rooms[name] = { name, group, objects };
+    rooms[name] = { name, group, contents, objects };
   }
   return { root, rooms };
 }

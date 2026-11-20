@@ -40,6 +40,13 @@ const ARTS = {
     g.fillStyle = '#5d7a5d'; g.beginPath(); g.moveTo(0, h); g.lineTo(w * 0.3, h * 0.35); g.lineTo(w * 0.6, h); g.fill();
     g.fillStyle = '#44604a'; g.beginPath(); g.moveTo(w * 0.35, h); g.lineTo(w * 0.7, h * 0.5); g.lineTo(w, h); g.fill();
   },
+  // same picture with the sun on the other side and one more cloud: a fair, small difference
+  mountains2: (g, w, h) => {
+    g.fillStyle = '#8ec9f2'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#ffd54f'; g.beginPath(); g.arc(w * 0.22, h * 0.25, 22, 0, 7); g.fill();
+    g.fillStyle = '#5d7a5d'; g.beginPath(); g.moveTo(0, h); g.lineTo(w * 0.3, h * 0.35); g.lineTo(w * 0.6, h); g.fill();
+    g.fillStyle = '#44604a'; g.beginPath(); g.moveTo(w * 0.35, h); g.lineTo(w * 0.7, h * 0.5); g.lineTo(w, h); g.fill();
+  },
   waves: (g, w, h) => {
     g.fillStyle = '#8ec9f2'; g.fillRect(0, 0, w, h);
     g.fillStyle = '#ffd54f'; g.beginPath(); g.arc(w * 0.78, h * 0.25, 22, 0, 7); g.fill();
