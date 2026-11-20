@@ -32,17 +32,18 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
 
   // ---- rings: a circle that always faces the viewer. White while you look at an object, green once it is a found difference ----
   const entries = [...world.rooms.A.objects.values(), ...world.rooms.B.objects.values()];
+  const RING_FIT = 0.75;   // ring radius as a share of the proxy radius: it circles the object, not the whole corner
   const ringGeo = new THREE.RingGeometry(0.86, 1, 48);
   const rings = new Map();   // "id:room" -> mesh
   for (const id of new Set(entries.map((e) => e.id))) {
     for (const r of ['A', 'B']) {
       // A missing object has no entry in room B: circle the empty spot (the same place as in room A).
       const e = world.rooms[r].objects.get(id) || world.rooms[r === 'A' ? 'B' : 'A'].objects.get(id);
-      const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthTest: false, depthWrite: false, side: THREE.DoubleSide }));
+      const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthTest: true, depthWrite: false, side: THREE.DoubleSide }));
       ring.renderOrder = 990; ring.visible = false; ring.frustumCulled = false;
       ring.position.set(ROOM_CENTERS[r].x + e.center.x, e.center.y, ROOM_CENTERS[r].z + e.center.z);
-      ring.scale.setScalar(Math.max(e.radius, 0.2));
-      ring.userData = { id, room: r, hover: false };
+      ring.scale.setScalar(Math.max(e.radius * RING_FIT, 0.2));
+      ring.userData = { id, room: r, hover: false, base: ring.position.clone() };
       world.root.add(ring); rings.set(`${id}:${r}`, ring);
     }
   }
@@ -176,15 +177,23 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       }
       if (endTimer > 0) { endTimer -= dt; if (endTimer <= 0) { pads.home(); } }
       if (active) {
-        hud.set(state === 'start' ? '' : `Found ${found.size}/${TOTAL}  ·  Wrong ${wrong}  ·  ${clockText(elapsed)}`);
+        hud.set(state !== 'play' ? '' : `Found ${found.size}/${TOTAL}  ·  Wrong ${wrong}  ·  ${clockText(elapsed)}`);
         // face the viewer; found rings pulse unless reduced motion is on
         const pulse = settings.reducedMotion ? 1 : 1 + 0.06 * Math.sin(t * 4);
         camera.getWorldQuaternion(_q);
-        rings.forEach((r) => { if (r.visible) { r.quaternion.copy(_q); r.scale.setScalar(Math.max(entryRadius(r), 0.2) * settings.targetScale * (found.has(r.userData.id) ? pulse : 1)); } });
+        rings.forEach((r) => {
+          if (!r.visible) return;
+          r.quaternion.copy(_q);
+          const rad = Math.max(entryRadius(r) * RING_FIT, 0.2) * settings.targetScale;
+          r.scale.setScalar(rad * (found.has(r.userData.id) ? pulse : 1));
+          // Depth-tested, so walls and the board hide it. Moved toward the viewer by its radius so the object itself does not cut it.
+          _d.subVectors(_a, r.userData.base).normalize();
+          r.position.copy(r.userData.base).addScaledVector(_d, rad + 0.05);
+        });
       }
     },
   };
-  const _q = new THREE.Quaternion();
+  const _q = new THREE.Quaternion(), _d = new THREE.Vector3();
   const entryRadius = (r) => { const e = world.rooms[r.userData.room].objects.get(r.userData.id) || world.rooms[r.userData.room === 'A' ? 'B' : 'A'].objects.get(r.userData.id); return e.radius; };
 
   reset();
