@@ -15,6 +15,19 @@ function signTexture(text) {
   return t;
 }
 
+// The note on a closed room (the empty-state rule: when something is empty on purpose, say why and what to do next).
+function closedTexture(name) {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 300;
+  const g = c.getContext('2d');
+  g.fillStyle = 'rgba(20,24,34,0.88)'; g.fillRect(0, 0, 1024, 300);
+  g.strokeStyle = '#f2c879'; g.lineWidth = 8; g.strokeRect(6, 6, 1012, 288);
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = '#f2c879'; g.font = 'bold 84px sans-serif'; g.fillText(`Room ${name}: closed`, 512, 95);
+  g.fillStyle = '#ffffff'; g.font = '58px sans-serif'; g.fillText('Look at the gold pad to step in', 512, 200);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x9db8a8, roughness: 1 });       // soft sage, like the cosy diorama references
 const trimMat = new THREE.MeshStandardMaterial({ color: 0x5b3f2a, roughness: 0.8 });     // dark wood: skirting, window frame, shelf
 const floorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });    // colour comes from the plank texture
@@ -94,6 +107,8 @@ export function buildWorld({ texScale = 1 } = {}) {
     wall(0.1, WALL_H, ROOM_D, ROOM_W / 2 + 0.05, 0);           // right
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ map: signTexture(`ROOM ${name}`) }));
     sign.position.set(0, WALL_H + 0.3, ROOM_D / 2); group.add(sign);   // above the open front, readable from the lobby
+    const closed = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.7), new THREE.MeshBasicMaterial({ map: closedTexture(name), transparent: true }));
+    closed.position.set(0, 1.55, -0.6); closed.visible = false; group.add(closed);   // shown while the room is closed (my-interaction.js refresh)
     const contents = new THREE.Group(); group.add(contents);   // everything you can look at: hidden in the rooms you are not standing in (my-interaction.js)
     decorate(contents, plank);
 
@@ -111,7 +126,7 @@ export function buildWorld({ texScale = 1 } = {}) {
       const radius = Math.max(w, h, d) * (spec.scale || 1) * 0.62;
       objects.set(spec.id, { id: spec.id, label: spec.label, room: name, spec, group: obj, proxy, center, radius });
     }
-    rooms[name] = { name, group, contents, objects };
+    rooms[name] = { name, group, contents, closed, objects };
   }
   return { root, rooms };
 }

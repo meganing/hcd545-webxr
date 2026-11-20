@@ -115,7 +115,7 @@ Each question has a short model answer and where to open the code. Cover the ans
 - Default snap angle? 30 degrees.
 - Smooth turn speed? 90 degrees per second.
 - Hint delay? 25 s.
-- Number of differences? 5 real, 3 decoys.
+- Number of differences? 5 real, 5 decoys (turned, moved or lit), and 4 plain objects that are the same, 14 things to look at in all.
 - Which three.js version? 0.186.1.
 - Why `base: './'` in `vite.config.js`? The build works from a GitHub Pages sub-path.
 - What is `__COMMIT__`? The short commit hash injected by Vite, shown in the footer, to prove which commit is deployed.
@@ -128,3 +128,5 @@ Each question has a short model answer and where to open the code. Cover the ans
 92. **How is the score worked out?** 100 per find times a combo of 1 to 3, plus 2 per second left when all five are found. Best score is in `localStorage`.
 93. **What happens when time runs out?** `finish(false)`: the missed differences get orange rings, the board shows the score and a rank, and Play again restarts at once.
 94. **Did you test this on players?** **(own data)** Say what you did and saw. The design came from reading about change blindness and casual-game loops, which is a rationale, not a test.
+95. **Why do the rooms look empty from the lobby while playing?** On purpose: you only see the room you stand in. Each closed room shows a sign ("Room A: closed. Look at the gold pad to step in"), because an empty-looking screen with no explanation reads as a bug. It is the empty-state rule: say why it is empty and what to do next (`closedTexture` in `world.js`).
+96. **What sounds does the game make?** A ping on every dwell completion, then a rising chime for a correct flag (higher with the combo), a low buzz for a wrong one, a rising arpeggio when all are found and a falling run when time is up. All are generated in code (`makeSeq` in `audio.js`) and each has a bracketed caption.

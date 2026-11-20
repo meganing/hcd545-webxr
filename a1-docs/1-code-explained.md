@@ -122,11 +122,11 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 - **Where**: `audio.js` (`SpatialAudio`), `captions.js`.
 - **How it works**:
   - `AudioListener` on the camera + `PositionalAudio` on a mesh = a Web Audio `PannerNode`. `panningModel = 'HRTF'` gives direction cues on headphones. `refDistance 1.5`, `rolloff 1.2`, inverse distance model.
-  - Sounds are generated in code (`makeHum`, `makePing`), so there are no audio files.
+  - Sounds are generated in code (`makeHum`, `makePing`, `makeSeq`), so there are no audio files. Game sounds (`audio.sfx(name, rate)`): `found` a rising two-note chime (higher with the combo), `wrong` a low double buzz, `win` a rising arpeggio, `lose` a falling run. They follow the 880 Hz activation ping, which every dwell completion plays.
   - Browsers keep the `AudioContext` suspended until a user gesture, so `audio.start()` is called inside the Start click.
   - Sound is off by default. `settings.audio` toggles `play()` and `pause()`.
   - Mine, `hintAt(obj)`: adds one `PositionalAudio` (a 520 Hz ping) to the target object, plays it, and returns a caption `[hint ping, ahead and to the left, 3 m]` from `describe()`. The bearing text uses `worldToLocal` and `atan2`.
-  - Every sound has a caption: the chime (`[chime] ...` is the start of the caption, so a deaf player is told a sound happened), the hum (`describe()`), the hint (caption). The game is finishable with sound off.
+  - Every sound has a caption that starts with the sound in brackets: `[rising chime]`, `[low buzz]`, `[fanfare]`, `[falling tone]`, and `[chime]` for a plain activation, the hum (`describe()`), the hint (caption). The game is finishable with sound off.
 
 ## 9. Accessibility settings (saved)
 
@@ -183,6 +183,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Soft failure: running out of time reveals what you missed and Play again restarts at once.
   - The research behind it was light: articles on change blindness, flow, short replayable sessions and streaks, so treat it as a design rationale and not evidence. The differences are kept small but fair (mug red to orange, sun on the other side of the picture, a pink lamp shade, plant +45 percent).
 - **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: true` and moved toward the viewer by its radius, so walls and the board hide it. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.
+- **Empty state**: a closed room (the one you are not in, during play) shows a sign saying it is closed and to look at the gold pad. Without it, bare walls look like a rendering bug.
 - **Hint**: after 25 s without a find, `hint()` picks the nearest unfound difference (preferring your room) and calls `audio.hintAt()`. If it is in the other room the caption names the room.
 - **Targets per room**: `refresh()` adds or removes each proxy from `gaze.targets`. `update()` detects the room from the head position with `roomAt(x, z)`, so a person who really walks in a headset gets the right targets too.
 - **Pads**: `createPads` in `menu.js` got options (`spots`, `radius`, `names`, `canShow`, `onArrive`). The defaults keep the starter's behaviour. The game passes its own spots and a link table (`PAD_LINKS`) so only pads that are big enough from where you stand are shown (the lobby pad and, from the lobby, both rooms).
@@ -194,7 +195,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 | `main.js` | platform profile, two pad sets, 4 view modes (game + starter), lobby fixtures, `mine3d.update`, start card text | game view without breaking starter features |
 | `menu.js` | `createPads` options, `setEnabled`, `onArrive` | game pads, per-pad visibility |
 | `scene.js` | `shadowMap` option, `'game'` cue mode | phone adaptation; hide starter props in the game |
-| `audio.js` | `hintAt`, `describe(mesh, name)`, ping frequency argument | the hint |
+| `audio.js` | `hintAt`, `describe(mesh, name)`, ping frequency argument, `makeSeq`, `sfx()` | the hint and the game sounds |
 | `adapt.js` | `platformProfile()` | phone adaptations |
 | `settings.js` | storage key `...-a1`, `cues: 'game'` | own saved settings, game first |
 | `my-interaction.js` | replaced the template with the game | the task |

@@ -14,7 +14,7 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log('FAIL', m);
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, 1.6, 0.05, 200); const rig = new THREE.Group(); rig.add(camera); scene.add(rig); camera.position.set(0, 1.6, 0);
 const said = []; const captions = { say: (t) => said.push(t) };
-let pings = 0; const hints = []; const audio = { ping: () => pings++, hintAt: (o) => { hints.push(o); return '[hint ping, ahead, 3 m]'; } };
+let pings = 0; const hints = []; const audio = { ping: () => pings++, sfx: () => {}, hintAt: (o) => { hints.push(o); return '[hint ping, ahead, 3 m]'; } };
 const gaze = new GazeSystem({ renderer: {}, camera });
 let homed = 0; const pads = { home: () => { homed++; camera.position.set(0, 1.6, 0); rig.position.set(0, 0, 0); } };
 const game = addMyTargets({ scene, camera, gaze, captions, audio, pads });
@@ -29,7 +29,7 @@ go(0, 0); gaze.targets[0].userData.target.onActivate();
 ok(game.state === 'play', 'Begin starts the game');
 ok(gaze.targets.length === 0, 'lobby while playing: no targets at all (view-only)');
 go(R.ROOM_CENTERS.B.x, R.ROOM_CENTERS.B.z + 1);
-ok(game.room === 'B' && gaze.targets.length === 9, `in room B: 9 objects are targets (${gaze.targets.length}; the clock is missing there)`);
+ok(game.room === 'B' && gaze.targets.length === 13, `in room B: 13 objects are targets (${gaze.targets.length}; the clock is missing there)`);
 ok(!labels().includes('Clock'), 'room B has no clock target');
 // gaze-pick: aim the camera at the mug from the front pad of room B
 const aimAt = (id) => { const e = gaze.targets.find((t) => t.userData.target.label.toLowerCase() === id); const p = new THREE.Vector3(); e.getWorldPosition(p); camera.lookAt(p); camera.updateMatrixWorld(true); gaze.pickFromCamera(); return gaze.pickFromCamera()?.root.userData.target.label; };

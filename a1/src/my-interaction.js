@@ -84,13 +84,14 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     if (d?.counts) {
       found.add(e.id); sinceFind = 0; streak++;
       const mult = Math.min(streak, 3); score += FIND_POINTS * mult;
-      captions.say(`[chime] Found: ${d.say} (${found.size} of ${TOTAL})${mult > 1 ? `  combo x${mult}` : ''}`, 4);
-      setTimeout(() => audio.ping(), 200);   // a second chime: the first one comes from main.js for every activation
+      captions.say(`[rising chime] Found: ${d.say} (${found.size} of ${TOTAL})${mult > 1 ? `  combo x${mult}` : ''}`, 4);
+      setTimeout(() => audio.sfx('found', 1 + 0.12 * (mult - 1)), 150);   // after the activation ping from main.js; higher with the combo
       paintAll();
       if (found.size === TOTAL) finish(true);
     } else {
       wrong++; ruledOut.add(e.id); streak = 0; elapsed += WRONG_COST;
-      captions.say(`[chime] ${d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`}  (-${WRONG_COST} s)`, 4);
+      setTimeout(() => audio.sfx('wrong'), 150);
+      captions.say(`[low buzz] ${d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`}  (-${WRONG_COST} s)`, 4);
     }
     refresh();
   }
@@ -107,7 +108,11 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     board.mesh.visible = active && state !== 'play';
     // One room at a time: while playing you only see the things in the room you stand in, so you compare from memory.
     // At the start and the end both rooms are open (a preview, then the reveal).
-    for (const name of ['A', 'B']) world.rooms[name].contents.visible = active && (state !== 'play' || room === name);
+    for (const name of ['A', 'B']) {
+      const open = active && (state !== 'play' || room === name);
+      world.rooms[name].contents.visible = open;
+      world.rooms[name].closed.visible = active && !open;   // a closed room says so and says what to do
+    }
     if (state === 'start') board.show({ title: `Find ${TOTAL} differences`, lines: [
       `Find ${TOTAL} differences in ${TIME_LIMIT / 60} minutes.`, 'You see one room at a time. Remember it!', 'Look at a gold pad to go in. Look at a thing to flag it.',
       'Bigger, smaller, new colour or missing counts.', `Turned, moved or lit: no. A wrong flag costs ${WRONG_COST} s.`] });
@@ -147,7 +152,8 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     else for (const d of REAL) if (!found.has(d.id)) missed.add(d.id);
     if (score > best) { best = score; newBest = score > 0; saveBest(best); }
     state = 'end'; endTimer = 2.5;
-    captions.say(won ? `All ${TOTAL} found. Score ${score}. Back to the lobby...` : `Time's up: ${found.size} of ${TOTAL}. Back to the lobby...`, 3);
+    setTimeout(() => audio.sfx(won ? 'win' : 'lose'), won ? 450 : 0);   // the win waits for the last find's sound
+    captions.say(won ? `[fanfare] All ${TOTAL} found. Score ${score}. Back to the lobby...` : `[falling tone] Time's up: ${found.size} of ${TOTAL}. Back to the lobby...`, 3);
   }
   // The reset path: put the experience back to its first state (called by safe.js through main.js; also in the console: hcd.mine.reset()).
   function reset() {

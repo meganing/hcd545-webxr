@@ -24,6 +24,11 @@ export const OBJECTS = [
   { id: 'clock',   label: 'Clock',   kind: 'clock',   x: -1.2,  z: -1.76, y: 1.85, proxy: [0.36, 0.36, 0.14], cy: 0 },
   { id: 'books',   label: 'Books',   kind: 'books',   x: 0.95,  z: 1.5,   y: 0,    proxy: [0.4, 0.25, 0.34], cy: 0.12 },
   { id: 'crate',   label: 'Crate',   kind: 'crate',   x: 1.75,  z: 0.35,  y: 0,    proxy: [0.42, 0.4, 0.42], cy: 0.2 },
+  // More things to look at (added after playtesting: with few objects, flagging everything was a winning strategy). None of these is a real difference.
+  { id: 'plant2',  label: 'Small plant', kind: 'plant', x: -0.9,  z: -1.55, y: 0,    scale: 0.7, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
+  { id: 'books2',  label: 'Books (2)',   kind: 'books', x: 1.2,   z: 0.75,  y: 0,    rotY: 0.1, proxy: [0.4, 0.25, 0.34], cy: 0.12 },
+  { id: 'crate2',  label: 'Small crate', kind: 'crate', x: -0.45, z: 1.55,  y: 0,    scale: 0.8, proxy: [0.42, 0.4, 0.42], cy: 0.2 },
+  { id: 'vase2',   label: 'Vase (2)',    kind: 'vase',  x: -1.6,  z: 0.0,   y: 0,    scale: 0.8, proxy: [0.34, 0.6, 0.34], cy: 0.3 },
 ];
 
 // Furniture that is only scenery (not a gaze target).
@@ -43,6 +48,8 @@ export const DIFFS = [
   { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#e6b9bd' },  say: 'The lamp shade is pink in room B' },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
   { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
+  { id: 'plant2',  type: 'move',    counts: false, set: { x: -1.1, z: -0.85 }, say: 'Same small plant, just moved' },
+  { id: 'books2',  type: 'rotate',  counts: false, set: { rotY: 1.2 },        say: 'Same books, just turned' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },
 ];
 export const REAL = DIFFS.filter((d) => d.counts);

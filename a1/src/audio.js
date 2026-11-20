@@ -24,6 +24,26 @@ function makePing(ctx, freq = 880) {
   return buf;
 }
 
+// A1 game sounds, made in code like the ping: a short run of notes. wave: 'sine' | 'square' (the buzz).
+function makeSeq(ctx, notes, { wave = 'sine', gap = 0.11, decay = 9, vol = 0.45 } = {}) {
+  const sr = ctx.sampleRate, noteLen = 0.3, len = Math.floor(sr * (gap * (notes.length - 1) + noteLen));
+  const buf = ctx.createBuffer(1, len, sr), d = buf.getChannelData(0);
+  notes.forEach((f, n) => {
+    const start = Math.floor(sr * gap * n);
+    for (let i = 0; start + i < len && i < sr * noteLen; i++) {
+      const t = i / sr, ph = 2 * Math.PI * f * t;
+      d[start + i] += vol * Math.exp(-t * decay) * (wave === 'square' ? Math.sign(Math.sin(ph)) * 0.5 : Math.sin(ph));
+    }
+  });
+  return buf;
+}
+const SFX = {
+  found: () => ['sine', [660, 990], {}],                          // a rising two-note chime: correct
+  wrong: () => ['square', [150, 120], { gap: 0.09, decay: 7, vol: 0.5 }],   // a low double buzz: wrong
+  win:   () => ['sine', [523, 659, 784, 1047], { gap: 0.13, decay: 5 }],    // a rising arpeggio: all found
+  lose:  () => ['sine', [440, 349, 262], { gap: 0.16, decay: 6 }],          // a falling run: time is up
+};
+
 const BEARINGS = [
   [30, 'ahead'], [75, 'ahead and to the %'], [120, 'to the %'], [165, 'behind and to the %'], [181, 'behind you'],
 ];
@@ -51,6 +71,11 @@ export class SpatialAudio {
     this.source = a; this.mesh = mesh;
     this.pingSound = new THREE.Audio(this.listener);
     this.pingSound.setBuffer(makePing(this.ctx));
+    this.sfxSounds = {};
+    for (const [name, make] of Object.entries(SFX)) {
+      const [wave, notes, opt] = make();
+      const s = new THREE.Audio(this.listener); s.setBuffer(makeSeq(this.ctx, notes, { wave, ...opt })); this.sfxSounds[name] = s;
+    }
   }
 
   // Call from a click/tap handler: browsers keep the AudioContext suspended until a user gesture.
@@ -74,6 +99,14 @@ export class SpatialAudio {
     if (!this.pingSound || !settings.audio || !this.started) return;
     if (this.pingSound.isPlaying) this.pingSound.stop();
     this.pingSound.play();
+  }
+
+  // A1: a game sound ('found' | 'wrong' | 'win' | 'lose'); rate raises the pitch (the combo). Needs Sound on, like ping(); every one has a caption.
+  sfx(name, rate = 1) {
+    const s = this.sfxSounds?.[name];
+    if (!s || !settings.audio || !this.started) return;
+    if (s.isPlaying) s.stop();
+    s.setPlaybackRate(rate); s.play();
   }
 
   // Describe where the source is, relative to where the user faces: the caption for people who cannot hear direction.
