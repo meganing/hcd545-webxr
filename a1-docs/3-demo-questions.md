@@ -97,7 +97,7 @@ Each question has a short model answer and where to open the code. Cover the ans
 67. **How are the differences defined?** `DIFFS` in `rooms.js`. Room B is room A plus these changes (`buildRoom('B')`).
 68. **What is a decoy and why have them?** A change that does not make the object different (turned, moved, lit differently). They teach the rule that an object is the same if it is the same thing, and stop people flagging everything.
 69. **Why is a "missing" difference flagged in room A?** The object only exists there. The ring then circles the empty spot in room B.
-70. **How does the lamp difference work?** The lamp's tag faces the pad and the lobby; room A says A, room B says B (`props.js lamp`, `DIFFS` entry `lamp`, type replace). The design check confirms it can be read from the room's pad.
+70. **How does the lamp difference work?** `props.js lamp` reads `o.shade`; room A uses cream, `DIFFS` entry `lamp` (type recolor) sets pink for room B. It is subtle on purpose: a tint, not a letter. The cream-to-pink step is also a brightness change.
 71. **How does Target size reach your objects?** `applyScale()` in `my-interaction.js` runs on start and on `onChange('targetScale')`. It scales the proxies and the 3D buttons.
 72. **How does the game know you are in room A?** `roomAt(x, z)` on the camera world position each frame.
 73. **Why not let people walk freely?** Smooth walking is the main sickness trigger and hard by gaze. Teleport pads are safer and also make the game easier to finish. In a headset physical walking still works because the room comes from the head position.

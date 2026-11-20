@@ -53,9 +53,8 @@ const BUILD = {
     const g = new THREE.Group();
     { const base = mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.04, 24), mat(0x3b3b3b), 0, 0.02, 0); base.receiveShadow = false; g.add(base); }   // thin: it would shadow itself and shimmer
     g.add(mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.2, 12), mat(0x3b3b3b), 0, 0.64, 0));
-    const shade = mesh(new THREE.CylinderGeometry(0.2, 0.27, 0.34, 28, 1, true), mat(0xf3e6c4, { side: THREE.DoubleSide, emissive: 0x3a3320 }), 0, 1.42, 0);
+    const shade = mesh(new THREE.CylinderGeometry(0.2, 0.27, 0.34, 28, 1, true), mat(new THREE.Color(o.shade || '#f3e6c4').getHex(), { side: THREE.DoubleSide, emissive: 0x4a3a20 }), 0, 1.42, 0);
     g.add(shade);
-    const front = plaque(o.front || 'A', 0.26); front.position.set(0, 1.42, 0.245); g.add(front);      // the tag faces the pad and the lobby: room A says A, room B says B
     return g;
   },
   plant() {

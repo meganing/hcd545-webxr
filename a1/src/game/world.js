@@ -56,10 +56,14 @@ function decorate(group, plank) {
   add(new THREE.CylinderGeometry(0.07, 0.055, 0.1, 12), new THREE.MeshStandardMaterial({ color: 0xb5651d }), 1.35, 2.17, bz);
   add(new THREE.SphereGeometry(0.1, 12, 10), leafMat, 1.35, 2.3, bz);
   // vines hanging from the top of the side walls, and a string of lights along the back wall
-  for (const side of [-1, 1]) for (let i = 0; i < 6; i++) {
-    const m = add(new THREE.SphereGeometry(0.1 + (i % 3) * 0.02, 10, 8), leafMat, side * (ROOM_W / 2 - 0.1), WALL_H - 0.1 - (i % 4) * 0.18, -1.2 + i * 0.55);
-    m.scale.y = 1.5;
-  }
+  // vines: strands of small flat leaves that hang down the side walls from the top edge (leaves lie against the wall, not floating)
+  const strands = [[-1.2, 5], [-0.55, 3], [0.3, 6], [1.0, 4], [1.45, 3]];
+  for (const side of [-1, 1]) strands.forEach(([z, n], si) => {
+    for (let k = 0; k < n; k++) {
+      const m = add(new THREE.SphereGeometry(0.075, 8, 6), leafMat, side * (ROOM_W / 2 - 0.045), WALL_H - 0.08 - k * 0.14, z + ((k + si) % 2 ? 0.03 : -0.03));
+      m.scale.set(0.3, 1.3, 1);   // flattened against the wall
+    }
+  });
   for (let i = 0; i < 9; i++) add(new THREE.SphereGeometry(0.035, 8, 6), glowMat, -1.8 + i * 0.45, WALL_H - 0.12 - Math.sin((i / 8) * Math.PI) * -0.0 - (i % 2) * 0.06, -ROOM_D / 2 + 0.06);
   // one warm light per room (no shadows: cheap on phones), so the room feels lit from a lamp and the window
   const warm = new THREE.PointLight(0xffc27a, 7, 6.5, 2); warm.position.set(0, 2.1, 0.2); group.add(warm);

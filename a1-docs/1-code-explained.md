@@ -173,7 +173,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - `reset()` is called by Restart and Exit through `safe.js` hooks in `main.js`.
 - **Data-driven rooms**: `OBJECTS` is room A. `DIFFS` is the answer key. `buildRoom('B')` copies room A and applies `set`, `remove` or `add`. To change the game, edit `DIFFS`.
 - **Rules** (shown on the start board):
-  - Real (counts): added, missing, replaced, recoloured (also a brightness change), resized by at least 35 percent, a different tag on a lamp (A or B).
+  - Real (counts): added, missing, replaced, recoloured (also a brightness change), resized by at least 35 percent, a different lamp shade colour.
   - Decoy (does not count): turned, moved, lit differently, looks bigger only because of distance.
   - A wrong flag costs only a "Wrong" count and a caption that says why. There is no hover feedback that gives answers away: every object shows the same white ring when looked at.
 - **Rings**: a flat ring that copies the camera quaternion every frame (a billboard), `depthTest: false` so it shows through objects. White on hover, green once found, in both rooms. For a missing object the ring circles the empty spot in room B.

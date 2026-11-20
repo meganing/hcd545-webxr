@@ -44,7 +44,7 @@ The examiner decides the order. If they interrupt, follow them. The table is onl
 - You may drag to aim. Do not click or press keys to activate anything. The ring must fill.
 - Plan a route: Begin > pad Room A > flag clock (missing in B) > pad Room B > mug, plant, picture, lamp. About 2 minutes.
 - Practise the route 5 times with a stopwatch. Your best time and a first-time tester's time go into the report (brief: under 3 minutes for a first-time user).
-- The answers: mug (recoloured), plant (bigger), picture (replaced), clock (missing in B), lamp (tag says B). Decoys: chair, vase, lantern.
+- The answers: mug (recoloured), plant (bigger), picture (replaced), clock (missing in B), lamp (shade is pink in B). Decoys: chair, vase, lantern.
 
 ## Failure plans
 

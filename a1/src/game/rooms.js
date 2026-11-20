@@ -14,7 +14,7 @@ export const PAD_RADIUS = 0.7;
 // A proxy is never smaller than MIN_PROXY, because a target must cover at least 3 degrees from 4.5 m (0.24 m; 0.32 m leaves room for Target size 0.8).
 export const MIN_PROXY = 0.32;
 export const OBJECTS = [
-  { id: 'lamp',    label: 'Lamp',    kind: 'lamp',    x: 1.6,   z: -1.4,  y: 0,    front: 'A', proxy: [0.5, 1.55, 0.5], cy: 0.78 },
+  { id: 'lamp',    label: 'Lamp',    kind: 'lamp',    x: 1.6,   z: -1.4,  y: 0,    shade: '#f3e6c4', proxy: [0.5, 1.55, 0.5], cy: 0.78 },
   { id: 'plant',   label: 'Plant',   kind: 'plant',   x: -1.6,  z: -1.4,  y: 0,    scale: 1, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
   { id: 'vase',    label: 'Vase',    kind: 'vase',    x: -1.55, z: 1.1,   y: 0,    proxy: [0.34, 0.6, 0.34], cy: 0.3 },
   { id: 'chair',   label: 'Chair',   kind: 'chair',   x: 1.5,   z: 1.1,   y: 0,    rotY: 0.25, proxy: [0.55, 0.95, 0.55], cy: 0.47 },
@@ -40,7 +40,7 @@ export const DIFFS = [
   { id: 'plant',   type: 'resize',  counts: true,  set: { scale: 1.45 },      say: 'The plant is bigger in room B' },
   { id: 'picture', type: 'replace', counts: true,  set: { art: 'waves' },     say: 'A different picture' },
   { id: 'clock',   type: 'missing', counts: true,  remove: true,              say: 'The clock is missing in room B' },
-  { id: 'lamp',    type: 'replace', counts: true,  set: { front: 'B' },       say: 'The lamp tag says B', viewFrom: [0, 1] },
+  { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#e9b8bd' },  say: 'The lamp shade is pink in room B' },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
   { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },

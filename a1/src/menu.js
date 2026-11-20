@@ -125,7 +125,7 @@ export function createPads({ scene, gaze, comfort, spots = [[-3, -1], [2.5, 1.5]
   scene.add(group);
   const pads = spots.map(([x, z], i) => {
     const pad = new THREE.Group();
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 40), new THREE.MeshStandardMaterial({ color: 0x1de9b6, emissive: 0x0a5a48 }));
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 40), new THREE.MeshStandardMaterial(canShow ? { color: 0xf2c879, emissive: 0x5a3a10 } : { color: 0x1de9b6, emissive: 0x0a5a48 }));   // the game's pads are warm gold (they sit on the rug); the starter's stay teal
     const rim = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.03, 8, 40).rotateX(Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xffffff }));
     let hover = false;
     // Contrast mode: yellow pad with a thick black rim (white when hovered) instead of teal with a white rim.

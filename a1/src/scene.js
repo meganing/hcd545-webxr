@@ -20,6 +20,12 @@ const skyTextures = {
     grad.addColorStop(0, '#1b2a55'); grad.addColorStop(0.5, '#8fb4e8'); grad.addColorStop(0.55, '#e8dcc0'); grad.addColorStop(1, '#4a4a4a');
     g.fillStyle = grad; g.fillRect(0, 0, w, h);
   }),
+  // A1 game view: an evening sky (dark blue to a warm band at the horizon), so the lit rooms look cosy.
+  dusk: () => canvasTexture(512, 256, (g, w, h) => {
+    const grad = g.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#141b3d'); grad.addColorStop(0.42, '#3b3f7a'); grad.addColorStop(0.5, '#c98a6b'); grad.addColorStop(0.55, '#3a2e3a'); grad.addColorStop(1, '#1d1a24');
+    g.fillStyle = grad; g.fillRect(0, 0, w, h);
+  }),
   checker: () => canvasTexture(1024, 512, (g, w, h) => {
     const n = 32, sw = w / n, sh = h / (n / 2);
     for (let y = 0; y < n / 2; y++) for (let x = 0; x < n; x++) {
@@ -34,7 +40,9 @@ export function createEnvironment(scene, { shadowMap = 2048 } = {}) {   // A1: s
   const root = new THREE.Group();
   scene.add(root);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.6));
+  const hemi = new THREE.HemisphereLight(0xffffff, 0x445566, 1.6);
+  scene.add(hemi);
+  let gameLook = false;   // A1: true in the game view (evening look)
   const sun = new THREE.DirectionalLight(0xffffff, 2.0);   // the sun: one directional light, aimed at the origin
   sun.position.set(4, 8, 3);
   sun.shadow.mapSize.set(shadowMap, shadowMap);
@@ -64,7 +72,7 @@ export function createEnvironment(scene, { shadowMap = 2048 } = {}) {   // A1: s
   let skyMap = null;
   function setSky(kind) {
     skyMap?.dispose();
-    skyMap = (skyTextures[kind] || skyTextures.gradient)();
+    skyMap = (skyTextures[gameLook && kind === 'gradient' ? 'dusk' : kind] || skyTextures.gradient)();
     sky.material.map = skyMap;
     sky.material.needsUpdate = true;
   }
@@ -118,12 +126,17 @@ export function createEnvironment(scene, { shadowMap = 2048 } = {}) {   // A1: s
     target.visible = props.visible;
     models.visible = !game && mode !== 'solids';
     if (models.visible) loadModels();
+    gameLook = game;
+    hemi.color.setHex(game ? 0xb7a6d6 : 0xffffff); hemi.groundColor.setHex(game ? 0x3a2a30 : 0x445566); hemi.intensity = game ? 0.75 : 1.6;
+    sun.color.setHex(game ? 0xffd9b0 : 0xffffff); sun.intensity = game ? 0.9 : 2.0;
+    grid.visible = !game;
+    setSky(settings.sky); setContrast(settings.contrast);
   }
 
   function setShadows(on) { sun.castShadow = on; }
   // High contrast (Lab 3): near-black floor with a bright, opaque grid so the ground plane and distances stay readable.
   function setContrast(on) {
-    floor.material.color.setHex(on ? 0x101010 : 0x5a6b5a);
+    floor.material.color.setHex(on ? 0x101010 : (gameLook ? 0x2b2530 : 0x5a6b5a));
     grid.material.opacity = on ? 0.9 : 0.35;
   }
 
