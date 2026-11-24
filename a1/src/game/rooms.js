@@ -16,19 +16,19 @@ export const MIN_PROXY = 0.32;
 export const OBJECTS = [
   { id: 'lamp',    label: 'Lamp',    kind: 'lamp',    x: 1.6,   z: -1.4,  y: 0,    shade: '#f3e6c4', proxy: [0.5, 1.55, 0.5], cy: 0.78 },
   { id: 'plant',   label: 'Plant',   kind: 'plant',   x: -1.6,  z: -1.4,  y: 0,    scale: 1, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
-  { id: 'vase',    label: 'Vase',    kind: 'vase',    x: -1.55, z: 1.1,   y: 0,    proxy: [0.34, 0.6, 0.34], cy: 0.3 },
-  { id: 'chair',   label: 'Chair',   kind: 'chair',   x: 1.5,   z: 1.1,   y: 0,    rotY: 0.25, proxy: [0.55, 0.95, 0.55], cy: 0.47 },
+  { id: 'vase',    label: 'Vase',    kind: 'vase',    x: -1.65, z: 0.55,  y: 0,    proxy: [0.34, 0.6, 0.34], cy: 0.3 },
+  { id: 'chair',   label: 'Chair',   kind: 'chair',   x: 1.65,  z: -0.25,  y: 0,    rotY: 0.25, proxy: [0.55, 0.95, 0.55], cy: 0.47 },
   { id: 'mug',     label: 'Mug',     kind: 'mug',     x: 0.3,   z: -1.35, y: 0.75, color: '#c62828', proxy: [0.32, 0.32, 0.32], cy: 0.08 },
   { id: 'lantern', label: 'Lantern', kind: 'lantern', x: -0.3,  z: -1.35, y: 0.75, lit: false, proxy: [0.32, 0.34, 0.32], cy: 0.1 },
   { id: 'picture', label: 'Picture', kind: 'picture', x: 0.0,   z: -1.76, y: 1.5,  art: 'mountains', proxy: [0.85, 0.6, 0.14], cy: 0 },
   { id: 'clock',   label: 'Clock',   kind: 'clock',   x: -1.2,  z: -1.76, y: 1.85, proxy: [0.36, 0.36, 0.14], cy: 0 },
-  { id: 'books',   label: 'Books',   kind: 'books',   x: 0.95,  z: 1.5,   y: 0,    proxy: [0.4, 0.25, 0.34], cy: 0.12 },
-  { id: 'crate',   label: 'Crate',   kind: 'crate',   x: 1.75,  z: 0.35,  y: 0,    proxy: [0.42, 0.4, 0.42], cy: 0.2 },
+  { id: 'books',   label: 'Books',   kind: 'books',   x: 1.75,  z: 0.95,  y: 0,    proxy: [0.4, 0.25, 0.34], cy: 0.12 },
+  { id: 'crate',   label: 'Crate',   kind: 'crate',   x: 1.7,   z: 0.3,   y: 0,    proxy: [0.42, 0.4, 0.42], cy: 0.2 },
   // More things to look at (added after playtesting: with few objects, flagging everything was a winning strategy). None of these is a real difference.
   { id: 'plant2',  label: 'Small plant', kind: 'plant', x: -0.9,  z: -1.55, y: 0,    scale: 0.7, proxy: [0.6, 0.85, 0.6], cy: 0.43 },
-  { id: 'books2',  label: 'Books (2)',   kind: 'books', x: 1.2,   z: 0.75,  y: 0,    rotY: 0.1, proxy: [0.4, 0.25, 0.34], cy: 0.12 },
-  { id: 'crate2',  label: 'Small crate', kind: 'crate', x: -0.45, z: 1.55,  y: 0,    scale: 0.8, proxy: [0.42, 0.4, 0.42], cy: 0.2 },
-  { id: 'vase2',   label: 'Vase (2)',    kind: 'vase',  x: -1.6,  z: 0.0,   y: 0,    scale: 0.8, proxy: [0.34, 0.6, 0.34], cy: 0.3 },
+  { id: 'books2',  label: 'Books (2)',   kind: 'books', x: 0.95,  z: -1.2,  y: 0,    rotY: 0.1, proxy: [0.4, 0.25, 0.34], cy: 0.12 },
+  { id: 'crate2',  label: 'Small crate', kind: 'crate', x: -1.72, z: 1.1,   y: 0,    scale: 0.8, proxy: [0.42, 0.4, 0.42], cy: 0.2 },
+  { id: 'vase2',   label: 'Vase (2)',    kind: 'vase',  x: -1.3,  z: -0.65,  y: 0,    scale: 0.8, proxy: [0.34, 0.6, 0.34], cy: 0.3 },
 ];
 
 // Furniture that is only scenery (not a gaze target).
@@ -47,8 +47,8 @@ export const DIFFS = [
   { id: 'clock',   type: 'missing', counts: true,  remove: true,              say: 'The clock is missing in room B' },
   { id: 'lamp',    type: 'recolor', counts: true,  set: { shade: '#e6b9bd' },  say: 'The lamp shade is pink in room B' },
   { id: 'chair',   type: 'rotate',  counts: false, set: { rotY: 0.95 },       say: 'Same chair, just turned' },
-  { id: 'vase',    type: 'move',    counts: false, set: { x: -1.75, z: 0.45 }, say: 'Same vase, just moved' },
-  { id: 'plant2',  type: 'move',    counts: false, set: { x: -1.1, z: -0.85 }, say: 'Same small plant, just moved' },
+  { id: 'vase',    type: 'move',    counts: false, set: { x: -1.65, z: 0.05 }, say: 'Same vase, just moved' },
+  { id: 'plant2',  type: 'move',    counts: false, set: { x: -0.75, z: -0.95 }, say: 'Same small plant, just moved' },
   { id: 'books2',  type: 'rotate',  counts: false, set: { rotY: 1.2 },        say: 'Same books, just turned' },
   { id: 'lantern', type: 'light',   counts: false, set: { lit: true },        say: 'Same lantern, lit differently' },
 ];
@@ -72,12 +72,15 @@ export function buildRoom(room) {
 
 // Teleport pads, in order. The last one is Home (the lobby): menu.js treats the last spot as Home.
 const local = (room, x, z) => [ROOM_CENTERS[room].x + x, ROOM_CENTERS[room].z + z];
-export const PAD_SPOTS = [local('A', 0, 0.35), local('B', 0, 0.35), [0, 0]];   // one pad per room, and Home
+// The room pads stand near the open front (z 1.05): every floor object is then at least 1.6 m away, so looking at it never points the gaze
+// at the Pause / Restart / Exit dock (45 degrees below the horizon, nearer than the object). check-design.mjs part 7 checks this.
+export const PAD_SPOTS = [local('A', 0, 1.05), local('B', 0, 1.05), [0, 0]];   // one pad per room, and Home
 export const PAD_NAMES = ['Room A', 'Room B', 'Lobby'];
 export const PAD_ROOM = ['A', 'B', 'lobby'];
-// Which pads are shown (and can be looked at) from each pad. A wall may still hide one in the other room: the lobby pad is the way between rooms. The two rooms are 5.2 m apart: a pad that far away is still bigger than 3 degrees (check-design.mjs).
+// Which pads are shown (and can be looked at) from each pad. The gaze ray only tests targets, not walls, so a pad behind a wall could be
+// activated through it: each room therefore links only to the lobby (index 2), and the lobby links to both rooms.
 export const PAD_LINKS = [
-  [1, 2], [0, 2],
+  [2], [2],
   [0, 1],
 ];
 

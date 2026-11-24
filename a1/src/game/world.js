@@ -28,6 +28,7 @@ function closedTexture(name) {
   return t;
 }
 
+const FLOOR_TOP = 0.04;   // the floor box is 0.04 m thick and stands on y = 0
 const wallMat = new THREE.MeshStandardMaterial({ color: 0x9db8a8, roughness: 1 });       // soft sage, like the cosy diorama references
 const trimMat = new THREE.MeshStandardMaterial({ color: 0x5b3f2a, roughness: 0.8 });     // dark wood: skirting, window frame, shelf
 const floorMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });    // colour comes from the plank texture
@@ -50,6 +51,7 @@ function plankTexture(scale) {
 // Decoration only: the same in both rooms, never a gaze target, never a difference.
 function decorate(group, plank) {
   const add = (geo, mat, x, y, z, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; m.castShadow = m.receiveShadow = true; group.add(m); return m; };
+  const noShadow = (m) => { m.castShadow = false; return m; };   // small decoration: skipped in the shadow pass (about 100 fewer draws, and stereo draws twice)
   floorMat.map = plank; floorMat.needsUpdate = true;
   add(new THREE.BoxGeometry(2.0, 0.012, 0.6), rugMat, 0, 0.046, -0.8);                              // a runner at the back, clear of the teleport pad
   // skirting boards
@@ -75,9 +77,10 @@ function decorate(group, plank) {
     for (let k = 0; k < n; k++) {
       const m = add(new THREE.SphereGeometry(0.075, 8, 6), leafMat, side * (ROOM_W / 2 - 0.045), WALL_H - 0.08 - k * 0.14, z + ((k + si) % 2 ? 0.03 : -0.03));
       m.scale.set(0.3, 1.3, 1);   // flattened against the wall
+      noShadow(m);
     }
   });
-  for (let i = 0; i < 9; i++) add(new THREE.SphereGeometry(0.035, 8, 6), glowMat, -1.8 + i * 0.45, WALL_H - 0.12 - Math.sin((i / 8) * Math.PI) * -0.0 - (i % 2) * 0.06, -ROOM_D / 2 + 0.06);
+  for (let i = 0; i < 9; i++) noShadow(add(new THREE.SphereGeometry(0.035, 8, 6), glowMat, -1.8 + i * 0.45, WALL_H - 0.12 - (i % 2) * 0.06, -ROOM_D / 2 + 0.06));
   // one warm light per room (no shadows: cheap on phones), so the room feels lit from a lamp and the window
   const warm = new THREE.PointLight(0xffc27a, 7, 6.5, 2); warm.position.set(0, 2.1, 0.2); group.parent.add(warm);   // on the room, not in `contents`: hiding a room's things must not change the light count (that would recompile shaders)
   // corner plants (front corners, away from the objects)
@@ -108,7 +111,7 @@ export function buildWorld({ texScale = 1 } = {}) {
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.35), new THREE.MeshBasicMaterial({ map: signTexture(`ROOM ${name}`) }));
     sign.position.set(0, WALL_H + 0.3, ROOM_D / 2); group.add(sign);   // above the open front, readable from the lobby
     const closed = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.7), new THREE.MeshBasicMaterial({ map: closedTexture(name), transparent: true }));
-    closed.position.set(0, 1.55, -0.6); closed.visible = false; group.add(closed);   // shown while the room is closed (my-interaction.js refresh)
+    closed.position.set(0, 1.0, -0.6); closed.visible = false; group.add(closed);   // shown while the room is closed (my-interaction.js refresh)
     const contents = new THREE.Group(); group.add(contents);   // everything you can look at: hidden in the rooms you are not standing in (my-interaction.js)
     decorate(contents, plank);
 
@@ -117,12 +120,13 @@ export function buildWorld({ texScale = 1 } = {}) {
     const objects = new Map();
     for (const spec of buildRoom(name)) {
       const obj = buildProp(spec);
+      if (!spec.y) obj.position.y = FLOOR_TOP;   // stand on the floor boards, not 4 cm inside them (the lamp base was level with the floor and flickered)
       contents.add(obj);
       const [w, h, d] = spec.proxy.map((v) => Math.max(v, MIN_PROXY));
       const proxy = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshBasicMaterial({ visible: false }));
       proxy.position.y = spec.cy;           // proxy is a child of the object: it follows resize, turn and move
       obj.add(proxy);
-      const center = new THREE.Vector3(spec.x, (spec.y || 0) + spec.cy * (spec.scale || 1), spec.z);
+      const center = new THREE.Vector3(spec.x, (spec.y || FLOOR_TOP) + spec.cy * (spec.scale || 1), spec.z);
       const radius = Math.max(w, h, d) * (spec.scale || 1) * 0.62;
       objects.set(spec.id, { id: spec.id, label: spec.label, room: name, spec, group: obj, proxy, center, radius });
     }

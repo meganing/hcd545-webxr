@@ -118,5 +118,16 @@ for (const room of ['A', 'B']) {
     ok(Math.hypot(A.x - B.x, A.z - B.z) >= 0.45, `${room}: ${A.id} and ${B.id} are too close (${Math.hypot(A.x - B.x, A.z - B.z).toFixed(2)} m)`);
   }
 }
+console.log('--- 7. the dock (45 degrees down) never covers an object, and pads in other rooms are not reachable through walls');
+for (const room of ['A', 'B']) {
+  const i = R.PAD_ROOM.indexOf(room), [sx, sz] = R.PAD_SPOTS[i];
+  for (const o of world[room]) {
+    if (o.spec.y) continue;   // on the table or the wall: far above the dock
+    const d = Math.hypot(o.g.position.x - sx, o.g.position.z - sz);
+    const down = THREE.MathUtils.radToDeg(Math.atan2(R.EYE - 0.1, d));   // looking at 0.1 m above the floor
+    ok(down < 45, `${room}.${o.spec.id}: looking at it is ${down.toFixed(0)} degrees down, behind the Pause / Restart / Exit dock`);
+  }
+  ok(!R.PAD_LINKS[i].some((j) => R.PAD_ROOM[j] !== 'lobby'), `${room}: links to a pad behind a wall`);
+}
 console.log(fails ? `\n${fails} problem(s)` : '\nALL CHECKS PASSED');
 process.exit(fails ? 1 : 0);

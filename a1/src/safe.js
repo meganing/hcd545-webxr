@@ -9,7 +9,7 @@ import { Button3D } from './menu.js';
 //   Pause / Resume : while paused, only safe targets respond (gaze.paused)
 //   Restart        : reset hook (your task back to the start) + Home pad
 //   Exit           : Restart + end the XR session + leave stereo
-//   Exit stereo    : only shown in stereo, so a split-screen user can leave without touching the phone
+//   Exit stereo    : below the other three (A1: above them it covered floor objects in the rooms); only shown in stereo, so a split-screen user can leave without touching the phone
 // The targets carry userData.target.safe = true, which lets them dwell even when Gaze activation is off.
 const DIST = 0.78;   // horizontal and vertical offset (1.1 m at 45 degrees below the eyes)
 
@@ -31,7 +31,7 @@ export function createSafeHarbour({ scene, camera, gaze, renderer, stereo, setSt
   const pause = make('Pause', -0.34, -0.1, grey, () => api.pause());
   const restart = make('Restart', 0, -0.1, graphite, () => api.restart());
   const exit = make('Exit', 0.34, -0.1, red, () => api.exit());
-  const exitStereo = make('Exit\nstereo', 0, 0.12, red, () => { setStereo(false); say('Left stereo'); });
+  const exitStereo = make('Exit\nstereo', 0, -0.32, red, () => { setStereo(false); say('Left stereo'); });
 
   Object.assign(api, {
     group, buttons: { pause, restart, exit, exitStereo },

@@ -114,8 +114,8 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       world.rooms[name].closed.visible = active && !open;   // a closed room says so and says what to do
     }
     if (state === 'start') board.show({ title: `Find ${TOTAL} differences`, lines: [
-      `Find ${TOTAL} differences in ${TIME_LIMIT / 60} minutes.`, 'You see one room at a time. Remember it!', 'Look at a gold pad to go in. Look at a thing to flag it.',
-      'Bigger, smaller, new colour or missing counts.', `Turned, moved or lit: no. A wrong flag costs ${WRONG_COST} s.`] });
+      `${TIME_LIMIT / 60} minutes, one room at a time.`, 'Look at a gold pad to step into a room.', 'Look at a thing until the ring fills.',
+      'Counts: size, colour, picture, missing.', 'Does not: a thing turned, moved or lit.', `A wrong flag costs ${WRONG_COST} seconds.`] });
     if (state === 'end') board.show({ title: won ? `All ${TOTAL} found!` : `Time's up: ${found.size} of ${TOTAL}`, lines: [
       `Score ${score}${newBest ? '  (new best!)' : `   Best ${best}`}`, `${rankFor(score, won)}.  Wrong flags: ${wrong}`,
       won ? `Time left ${clockText(Math.max(0, TIME_LIMIT - elapsed))}` : 'Orange rings: what you missed.', 'Look at Play again, or Restart below.'] });
@@ -187,7 +187,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
   onChange((k) => { if (k === 'targetScale') applyScale(); if (k === 'contrast') { paintAll(); board.show({ title: '', lines: [] }); refresh(); } });
 
   const api = {
-    root: world.root, reset, start, hint,
+    root: world.root, hud, board, reset, start, hint,   // hud and board: main.js fits them to a narrow screen
     get state() { return state; }, get room() { return room; }, get found() { return [...found]; }, get wrong() { return wrong; }, get score() { return score; }, get timeLeft() { return TIME_LIMIT - elapsed; },
     onRoom: null,        // main.js sets this: it shows the starter's menu and speaker only in the lobby
     flagId: (id, r) => flag(world.rooms[r || 'B'].objects.get(id) || world.rooms.A.objects.get(id)),   // console / test helper
@@ -196,7 +196,10 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
     update(dt, t) {
       camera.getWorldPosition(_a);
       const now = roomAt(_a.x, _a.z);
-      if (now !== room) { room = now; refresh(); api.onRoom?.(room); }
+      if (now !== room) {
+        room = now; refresh(); api.onRoom?.(room);
+        if (active && state === 'play' && room !== 'lobby') captions.say(`[chime] Room ${room}. To leave: turn around and look at the gold pad`, 4);
+      }
       if (active && state === 'play' && !gaze.paused) {
         elapsed += dt; sinceFind += dt;
         if (sinceFind >= HINT_AFTER) { sinceFind = 0; hint(); }
@@ -204,7 +207,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       }
       if (endTimer > 0) { endTimer -= dt; if (endTimer <= 0) { pads.home(); } }
       if (active) {
-        hud.set(state !== 'play' ? '' : `Found ${found.size}/${TOTAL}  ·  ${clockText(Math.max(0, TIME_LIMIT - elapsed))} left  ·  ${score} pts${streak > 1 ? `  x${Math.min(streak, 3)}` : ''}`);
+        hud.set(state !== 'play' ? '' : `Found ${found.size}/${TOTAL} · ${clockText(Math.max(0, TIME_LIMIT - elapsed))} · ${score} pts${streak > 1 ? ` x${Math.min(streak, 3)}` : ''}`);
         // face the viewer; found rings pulse unless reduced motion is on
         const pulse = settings.reducedMotion ? 1 : 1 + 0.06 * Math.sin(t * 4);
         camera.getWorldQuaternion(_q);

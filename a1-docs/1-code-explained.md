@@ -143,7 +143,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
   - Every flaggable object has an invisible box (the proxy) of at least 0.32 m (`MIN_PROXY` in `rooms.js`). At Target size 0.8 that is 0.256 m, so it still passes at 4.5 m.
   - Only the objects of the room you are in are in `gaze.targets` (`refresh()` in `my-interaction.js`). Objects in the other room would be too small.
   - The lobby is view-only while playing. The starter menu and speaker are hidden outside the lobby (`syncFixtures` in `main.js`), for the same reason.
-  - The check script measures the real proxies from every pad: smallest object about 9.6 degrees; every pad link at least 3 degrees (one pad per room plus Home; the Target size setting never goes below 1 for pads); Begin button 23 x 9 degrees.
+  - The check script measures the real proxies from every pad: smallest object about 7.4 degrees; every pad link at least 3 degrees (one pad per room plus Home; the Target size setting never goes below 1 for pads); Begin button 23 x 9 degrees.
 - **In the browser**: open the console, stand at a pad, run `hcd.angularSizes()`. Every row must say `ok: true`.
 
 ## 11. Performance and platform adaptations

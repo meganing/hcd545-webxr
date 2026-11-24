@@ -108,6 +108,14 @@ body.stereo .vrbtn { display: none !important; }
   #build { bottom: calc(var(--sb) + 36px); }
   .vrbtn { bottom: calc(var(--sb) + 56px) !important; }
 }
+/* A1: a phone held upright: the toolbar is two short rows across the top (it used to be a tall column that covered the score line and the
+   board), and Capabilities and Settings sit side by side below it. */
+@media (max-width: 560px) and (orientation: portrait) {
+  body:not(.stereo) #bar { right: var(--sr); grid-auto-flow: row; grid-template-rows: none; grid-template-columns: repeat(4, 1fr); }
+  body:not(.stereo) #bar .btn { font-size: 12px; padding: 6px 4px; margin-top: 0; text-align: center; white-space: normal; }
+  .stack { top: calc(var(--st) + 102px); width: calc(100vw - var(--sl) - var(--sr)); flex-direction: row; flex-wrap: wrap; justify-content: flex-end; }
+  .stack > .btn { width: auto; font-size: 12px; padding: 6px 10px; }
+}
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 

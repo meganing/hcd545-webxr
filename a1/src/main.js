@@ -75,7 +75,8 @@ const presetBtn = button('Comfort preset', (e) => {   // applies the next preset
   e.currentTarget.textContent = `Comfort: ${name}`;
   captions.say(`Comfort preset: ${name}`, 2);
 });
-const panel = createSettingsPanel({ sections: ['xp', 'comfort', 'access'], comfortButtons: [presetBtn] });   // IPD ... volume, trial, Reset height (settings-panel.js)
+// A1: the panel starts closed, so it does not cover the board and Room B (on a phone it covered half the view)
+const panel = createSettingsPanel({ sections: ['xp', 'comfort', 'access'], comfortButtons: [presetBtn], open: false });   // IPD ... volume, trial, Reset height (settings-panel.js)
 const trial = new Trial({
   scene, camera, renderer, gaze,
   onSay: (t, s) => captions.say(t, s),
@@ -241,6 +242,8 @@ function fitHeadLocked() {
     : Math.min(1, 0.95 * 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect / width));
   captions.mesh.scale.setScalar(fit(1.0, 1.3));
   badge.mesh.scale.setScalar(fit(0.5, 1.6));
+  mine3d.hud.mesh.scale.setScalar(fit(0.8, 1.3));
+  mine3d.board.mesh.scale.setScalar(fit(1.6, 2.2));   // the board is not head-locked, but it is read from the lobby, 2.2 m away
 }
 window.addEventListener('resize', resize);
 resize();
@@ -265,7 +268,7 @@ renderer.setAnimationLoop((now) => {              // not requestAnimationFrame: 
 startOverlay({
   title: 'Spot the difference',
   lines: [
-    'Two rooms look the same, but 5 things differ. Walk between them by looking at the gold pads, and flag what you find by looking at it until the ring fills.',
+    'Two rooms look the same, but 5 things differ. Teleport between them by looking at the gold pads, and flag what you find by looking at it until the ring fills.',
     'Move your phone to look around, or drag with finger or mouse. After Start you need no key, touch or controller. Use headphones for the 3D sound; it also works with sound off.',
     'Look down to find Pause, Restart and Exit at any time.',
   ],
