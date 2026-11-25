@@ -80,9 +80,9 @@ const panel = createSettingsPanel({ sections: ['xp', 'comfort', 'access'], comfo
 const trial = new Trial({
   scene, camera, renderer, gaze,
   onSay: (t, s) => captions.say(t, s),
-  onDone: (text) => panel.addResult(text),
+  onDone: (text) => { panel.addResult(text); panel.setOpen(!stereo.enabled); },   // A1: the panel reopens with the result
 });
-panel.onStartTrial = () => trial.start(10);
+panel.onStartTrial = () => { panel.setOpen(false); trial.start(10); };   // A1: the open panel covered balls
 panel.onResetHeight = () => seated.reset();
 panel.onReset = () => { presetIndex = 0; presetBtn.textContent = 'Comfort preset'; };   // the defaults are no preset
 const menu = createMenu({ scene, gaze, actions: {     // the 3D menu to the right of the start position (menu.js)

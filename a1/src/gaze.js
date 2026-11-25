@@ -14,7 +14,7 @@ export class GazeSystem {
   constructor({ renderer, camera }) {
     this.renderer = renderer; this.camera = camera;
     this.ray = new THREE.Raycaster(); this.ray.far = 40;
-    this.targets = [];
+    this.targets = []; this.only = null;   // only (A1): while the trial runs, its ball; other targets except the safe ones cannot be picked
     this.hovered = null; this.t = 0; this.progress = 0; this.lastStep = -1;
     this.onActivated = null;   // (target, via) feedback hook: audio ping + caption
     this.suppressed = false;   // set by the input chain while a controller is the active input (safe-harbor targets ignore it)
@@ -60,7 +60,7 @@ export class GazeSystem {
   // Find the nearest target hit by a ray.
   pick(origin, dir) {
     this.ray.set(origin, dir);
-    const live = this.targets.filter((t) => t.visible);
+    const live = this.targets.filter((t) => t.visible && (!this.only || t === this.only || t.userData.target.safe));
     for (const hit of this.ray.intersectObjects(live, true)) {
       const root = this._root(hit.object);
       if (root && root.visible) return { root, hit };

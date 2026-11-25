@@ -200,7 +200,7 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 | `settings.js` | storage key `...-a1`, `cues: 'game'` | own saved settings, game first |
 | `my-interaction.js` | replaced the template with the game | the task |
 
-Starter features still work: the Cues button cycles game > all > solids > models (the last three show the starter's scale-cue scene and its own pads), and Sky, Shadows, Stereo, Turn, Recenter, Settings, the 3D menu and the Start 10-target trial are unchanged.
+Gaze trial (`trial.js`): each ball is placed only where a ray test finds it unhidden, the Settings panel closes while the trial runs, and `gaze.only` stops pads and Begin from being picked by accident (safe targets still work). Starter features still work: the Cues button cycles game > all > solids > models (the last three show the starter's scale-cue scene and its own pads), and Sky, Shadows, Stereo, Turn, Recenter, Settings, the 3D menu and the Start 10-target trial are unchanged.
 
 ## 14. Honest limits (say them before you are asked)
 
