@@ -98,7 +98,7 @@ const badge = new InputBadge({ camera, input });        // head-locked: which in
 
 // Feedback for every activation: a ping you can hear and a caption you can read.
 gaze.onActivated = (target) => {
-  audio.ping();
+  if (!target.ownSound) audio.ping();   // the game's objects play found or wrong instead, so two sounds never clash
   if (target.label !== 'Trial target') captions.say(`[chime] ${target.label}`, 1.5);
 };
 
@@ -116,7 +116,7 @@ const cueIndex = () => { const i = CUE_MODES.indexOf(settings.cues); return i < 
 const FIXTURES = { game: { menu: [3.4, 1.5, 1.2], speaker: [-2.6, 1.6] }, starter: { menu: [2.6, 1.5, -1.4], speaker: [-3, -3.5] } };
 function syncFixtures() {
   const on = CUE_MODES[cueIndex()] !== 'game' || mine3d.room === 'lobby';
-  menu.group.visible = on; speaker.mesh.visible = on;
+  menu.group.visible = on; speaker.mesh.visible = on; audio.sync();   // the hum stops when its speaker is hidden
   Object.values(menu.buttons).forEach((b) => { b.group.visible = on; });   // a hidden parent does not stop the gaze ray: hide the targets themselves
 }
 mine3d.onRoom = syncFixtures;

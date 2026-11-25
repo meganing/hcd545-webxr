@@ -73,6 +73,7 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
   for (const e of entries) {
     e.proxy.userData.target = {
       label: e.label,
+      ownSound: true,   // flag() plays found or wrong, so main.js skips its ping
       onActivate: () => flag(e),
       setHover: (on) => { const r = rings.get(`${e.id}:${e.room}`); r.userData.hover = on; paintRing(r); },
     };
@@ -85,13 +86,13 @@ export function addMyTargets({ scene, camera, gaze, captions, audio, pads, texSc
       found.add(e.id); sinceFind = 0; streak++;
       const mult = Math.min(streak, 3); score += FIND_POINTS * mult;
       captions.say(`[rising chime] Found: ${d.say} (${found.size} of ${TOTAL})${mult > 1 ? `  combo x${mult}` : ''}`, 4);
-      setTimeout(() => audio.sfx('found', 1 + 0.12 * (mult - 1)), 150);   // after the activation ping from main.js; higher with the combo
+      audio.sfx('found', 1 + 0.12 * (mult - 1));   // higher with the combo
       paintAll();
       if (found.size === TOTAL) finish(true);
     } else {
       wrong++; ruledOut.add(e.id); streak = 0; elapsed += WRONG_COST;
-      setTimeout(() => audio.sfx('wrong'), 150);
-      captions.say(`[low buzz] ${d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`}  (-${WRONG_COST} s)`, 4);
+      audio.sfx('wrong');
+      captions.say(`[two low notes] ${d ? `Not a difference: ${d.say}` : `${e.label}: the same in both rooms`}  (-${WRONG_COST} s)`, 4);
     }
     refresh();
   }

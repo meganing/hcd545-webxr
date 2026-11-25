@@ -8,7 +8,7 @@ import { Button3D } from './menu.js';
 // simply looks down. The head-locked badge (badge.js) tells them where it is.
 //   Pause / Resume : while paused, only safe targets respond (gaze.paused)
 //   Restart        : reset hook (your task back to the start) + Home pad
-//   Exit           : Restart + end the XR session + leave stereo
+//   Exit           : leave the game: Restart + end the XR session. A1: it keeps phone stereo on, because Exit stereo is there for that
 //   Exit stereo    : below the other three (A1: above them it covered floor objects in the rooms); only shown in stereo, so a split-screen user can leave without touching the phone
 // The targets carry userData.target.safe = true, which lets them dwell even when Gaze activation is off.
 const DIST = 0.78;   // horizontal and vertical offset (1.1 m at 45 degrees below the eyes)
@@ -45,13 +45,12 @@ export function createSafeHarbour({ scene, camera, gaze, renderer, stereo, setSt
       hooks.reset(); hooks.home();
       say('Restarted', 2);
     },
-    // Order matters: reset your own state first, then leave stereo, then ask the session to end (async; main.js reacts to sessionend).
+    // Order matters: reset your own state first, then ask the session to end (async; main.js reacts to sessionend).
     exit() {
       api.restart();
-      if (stereo.enabled) setStereo(false);
       const session = renderer.xr.getSession();
       if (session) session.end().catch(() => {});
-      else if (!stereo.enabled) say('Not in a headset or stereo: restarted', 2);
+      else say(stereo.enabled ? 'Left the game. Exit stereo is below.' : 'Left the game', 3);
     },
   });
 

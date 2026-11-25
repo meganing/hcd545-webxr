@@ -122,11 +122,11 @@ One sentence for the whole project: **"Two rooms look the same but five things d
 - **Where**: `audio.js` (`SpatialAudio`), `captions.js`.
 - **How it works**:
   - `AudioListener` on the camera + `PositionalAudio` on a mesh = a Web Audio `PannerNode`. `panningModel = 'HRTF'` gives direction cues on headphones. `refDistance 1.5`, `rolloff 1.2`, inverse distance model.
-  - Sounds are generated in code (`makeHum`, `makePing`, `makeSeq`), so there are no audio files. Game sounds (`audio.sfx(name, rate)`): `found` a rising two-note chime (higher with the combo), `wrong` a low double buzz, `win` a rising arpeggio, `lose` a falling run. They follow the 880 Hz activation ping, which every dwell completion plays.
+  - Sounds are generated in code (`makeHum`, `makePing`, `makeSeq`), so there are no audio files. Game sounds (`audio.sfx(name, rate)`): `found` a rising two-note chime (higher with the combo), `wrong` two soft low notes, `win` a rising run, `lose` a falling run. Each note is a bell (four partials, the high ones fade first) with a quiet echo. Objects have `ownSound: true`, so the 659 Hz activation ping does not play on top of them.
   - Browsers keep the `AudioContext` suspended until a user gesture, so `audio.start()` is called inside the Start click.
-  - Sound is off by default. `settings.audio` toggles `play()` and `pause()`.
-  - Mine, `hintAt(obj)`: adds one `PositionalAudio` (a 520 Hz ping) to the target object, plays it, and returns a caption `[hint ping, ahead and to the left, 3 m]` from `describe()`. The bearing text uses `worldToLocal` and `atan2`.
-  - Every sound has a caption that starts with the sound in brackets: `[rising chime]`, `[low buzz]`, `[fanfare]`, `[falling tone]`, and `[chime]` for a plain activation, the hum (`describe()`), the hint (caption). The game is finishable with sound off.
+  - Sound is off by default. `settings.audio` toggles `play()` and `pause()`. The hum plays only while its speaker is visible, which is in the lobby (`sync()`, called from `syncFixtures()` in `main.js`).
+  - Mine, `hintAt(obj)`: adds one `PositionalAudio` (a 523 Hz bell) to the target object, plays it, and returns a caption `[hint ping, ahead and to the left, 3 m]` from `describe()`. The bearing text uses `worldToLocal` and `atan2`.
+  - Every sound has a caption that starts with the sound in brackets: `[rising chime]`, `[two low notes]`, `[fanfare]`, `[falling tone]`, and `[chime]` for a plain activation, the hum (`describe()`), the hint (caption). The game is finishable with sound off.
 
 ## 9. Accessibility settings (saved)
 

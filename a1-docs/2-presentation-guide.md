@@ -72,7 +72,7 @@ Open `src/game/rooms.js` or the named file, edit, save, check in the browser. De
 | Bigger minimum target | `rooms.js` | `MIN_PROXY = 0.32` to `0.4` |
 | Different comfort default | `src/my-comfort.js` or `settings.js` | `vignette`, `turnMode`, `snapAngle` |
 | Change the re-arm | `src/gaze.js` | `const REARM = 0.6` |
-| Change the hint sound | `src/audio.js` `hintAt` | `makePing(this.ctx, 520)` to another frequency |
+| Change the hint sound | `src/audio.js` `hintAt` | `makePing(this.ctx, 523)` to another frequency |
 | Change the pixel ratio rule | `src/adapt.js` `platformProfile` | `dense ? 1.5` to another number |
 | Change the room count text | `my-interaction.js` `refresh()` | the strings in `board.show` |
 | Add a pad link | `rooms.js` `PAD_LINKS` | add an index to a row (check with `node a1-docs/check-design.mjs`) |
