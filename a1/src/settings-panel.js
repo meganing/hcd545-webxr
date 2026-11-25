@@ -46,6 +46,8 @@ export function createSettingsPanel({ sections, open = true, comfortButtons = []
       format: (v) => v.toFixed(1), onInput: (v) => set('dwell', v) }));
     add('targetScale', slider({ label: 'Target size', min: 0.8, max: 1.6, step: 0.1, value: settings.targetScale,
       format: (v) => v.toFixed(1) + 'x', onInput: (v) => set('targetScale', v) }));
+    add('gazeUp', slider({ label: 'Pointer and view height (deg)', min: 0, max: 8, step: 1, value: settings.gazeUp,
+      format: (v) => v.toFixed(0), onInput: (v) => set('gazeUp', v) }));
     on('Access');
     add('reducedMotion', checkbox({ label: 'Reduced motion (forces snap turn, no animation)', value: settings.reducedMotion, onInput: (v) => set('reducedMotion', v) }));
     add('contrast', checkbox({ label: 'High contrast', value: settings.contrast, onInput: (v) => set('contrast', v) }));

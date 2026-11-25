@@ -23,6 +23,7 @@ export const defaults = {
   gazeEnabled: true,
   dwell: 1.2,             // seconds
   targetScale: 1.0,       // 0.8 - 1.6
+  gazeUp: 3,              // A1 (player feedback): the pointer (and, outside a headset, the view) sits this many degrees higher
   reducedMotion: prefersReduced,
   captions: true,
   audio: false,           // off until you press the Sound button (bottom right), the 3D menu or Sound on in Settings

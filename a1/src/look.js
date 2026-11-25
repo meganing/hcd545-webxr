@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 // Look-around for non-XR modes. three.js r186 no longer ships DeviceOrientationControls, so this is our own.
 // Phones and tablets: DeviceOrientation plus drag to turn left and right. Otherwise (desktop): drag only.
-const Y = new THREE.Vector3(0, 1, 0);
+const X = new THREE.Vector3(1, 0, 0), Y = new THREE.Vector3(0, 1, 0);
 const Z = new THREE.Vector3(0, 0, 1);
 const Q_UPRIGHT = new THREE.Quaternion(-Math.SQRT1_2, 0, 0, Math.SQRT1_2); // -90 deg about X: phone upright = looking at horizon
 const deg = THREE.MathUtils.degToRad;
@@ -85,6 +85,7 @@ export class LookControls {
       this.euler.set(this.pitch, this.dragYaw, 0, 'YXZ');
       q = new THREE.Quaternion().setFromEuler(this.euler);
     }
+    q.multiply(this.qTmp.setFromAxisAngle(X, -deg(this.settings.gazeUp)));   // A1: the view moves up on the screen with the pointer (gaze.js), so the pointer still aims where you face
     const lat = this.settings.latencyMs;
     if (lat <= 0) { this.buffer.length = 0; this.camera.quaternion.copy(q); return; }
     this.buffer.push({ t: now, q });

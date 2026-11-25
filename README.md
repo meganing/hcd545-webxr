@@ -1,4 +1,4 @@
-Live: <[URL](https://github.com/meganing/hcd545-lab1.git)>
+Live: https://meganing.github.io/hcd545-webxr/a1/
 
 <!--
 HOW TO USE THIS TEMPLATE (delete this comment block before the oral)

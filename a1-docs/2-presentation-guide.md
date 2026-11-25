@@ -103,6 +103,6 @@ After any change to the room data, run `node a1-docs/check-design.mjs` in a term
 
 ## Ship it (yours to do, I did not push anything)
 - Commit on branch `a1`, push it, and merge to `main`: the workflow runs only on pushes to `main`.
-- Check the live URL ends in `/a1/`, and note that the repo is `hcd545-lab1`, not `hcd545-webxr`.
+- Check the live URL: https://meganing.github.io/hcd545-webxr/a1/ (the repo was renamed from `hcd545-lab1`).
 - Tag the final commit `a1-final` if the course asks for it.
 - Run `python3 a1-docs/make_submission.py firstname_lastname` after the PDF is final.

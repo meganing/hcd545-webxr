@@ -72,7 +72,11 @@ export class GazeSystem {
     // Use the scene camera in every mode. In an XR session it is a child of the rig and follows the head pose, so the ray
     // stays correct after a turn or teleport. (renderer.xr.getCamera() is rig-local until the next render: it ignores the rig.)
     const cam = this.camera;
-    cam.getWorldPosition(this._o); cam.getWorldDirection(this._d);
+    cam.getWorldPosition(this._o);
+    // A1: the ray leaves gazeUp degrees above the view center, and the reticle moves with it, so the ring is always on what it selects. Outside a headset look.js shifts the view by the same angle
+    const up = THREE.MathUtils.degToRad(settings.gazeUp);
+    this.reticle.position.set(0, 1.6 * Math.sin(up), -1.6 * Math.cos(up)); this.reticle.rotation.x = up;
+    this._d.set(0, Math.sin(up), -Math.cos(up)).transformDirection(cam.matrixWorld);
     return this.pick(this._o, this._d);
   }
 
