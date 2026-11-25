@@ -31,6 +31,7 @@ export const defaults = {
   showFps: true,          // 'Show FPS (developer)': the FPS box; keep it on in the labs
   contrast: false,        // high-contrast mode (3D menu, pads, ring, captions, DOM panels)
   seated: false,          // seated mode: eye height is held at 1.6 m; 'Reset height' recalibrates (headset sessions)
+  hum: false,             // A1: the speaker's hum, separate from Sound: look at the orange ball to start or stop it
 };
 
 function load() {

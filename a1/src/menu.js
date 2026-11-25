@@ -164,7 +164,7 @@ export function createPads({ scene, gaze, comfort, spots = [[-3, -1], [2.5, 1.5]
   };
 }
 
-// A speaker you can look at to mute or unmute (a second target type: object, not button).
+// A speaker you can look at to start or stop its hum (a second target type: object, not button). A1: it no longer mutes the game sounds.
 export function createSpeaker({ scene, gaze }) {
   const speaker = new THREE.Group();
   const orb = new THREE.Mesh(new THREE.SphereGeometry(0.3, 24, 16), new THREE.MeshStandardMaterial({ color: 0xff9800, emissive: 0x663300 }));
@@ -172,7 +172,7 @@ export function createSpeaker({ scene, gaze }) {
   speaker.position.set(-3, 1.2, -3.5);
   speaker.userData.target = {
     label: 'Speaker',
-    onActivate: () => set('audio', !settings.audio),
+    onActivate: () => { const on = !(settings.audio && settings.hum); set('hum', on); if (on) set('audio', true); },   // starting the hum also needs Sound on
     setHover: (on) => { orb.material.emissive.setHex(on ? 0xffaa33 : 0x663300); },
   };
   scene.add(speaker); gaze.add(speaker);

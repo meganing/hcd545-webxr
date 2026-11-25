@@ -93,11 +93,12 @@ export class SpatialAudio {
 
   resume() { this.ctx.resume(); }
 
-  // Apply on/off + volume from settings. The hum also needs its speaker to be visible (A1: only in the lobby), so no caption points at something you cannot see.
+  // Apply on/off + volume from settings. Sound is for everything; the hum also needs its own switch and a visible speaker (A1: only in the lobby).
   sync() {
     this.listener.setMasterVolume(settings.volume);
     if (!this.source || !this.started) return;
-    const hum = settings.audio && this.mesh.visible;
+    if (settings.audio) this.ctx.resume();   // a phone can suspend sound when you switch apps
+    const hum = settings.audio && settings.hum && this.mesh.visible;
     if (hum !== this.source.isPlaying) { if (hum) this.source.play(); else this.source.pause(); }
   }
 

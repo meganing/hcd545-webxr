@@ -61,7 +61,7 @@ const captions = new Captions(camera);                  // head-locked caption s
 const audio = new SpatialAudio(camera, captions);       // listener on the camera, generated sounds (audio.js)
 const seated = createSeated({ rig, camera, renderer, say: (t) => captions.say(t, 3) });   // owns rig.position.y (seated.js)
 const gaze = new GazeSystem({ renderer, camera });      // reticle, dwell timer, progress ring (gaze.js)
-const speaker = createSpeaker({ scene, gaze });         // the orange sphere: look at it to mute or unmute
+const speaker = createSpeaker({ scene, gaze });         // the orange sphere: look at it to start or stop its hum
 audio.attach(speaker.mesh);                             // humming PositionalAudio on the speaker
 const padsStarter = createPads({ scene, gaze, comfort });      // the starter's teleport pads (menu.js): shown in the Cues views that are not the game
 const padsGame = createPads({ scene, gaze, comfort, spots: PAD_SPOTS, radius: PAD_RADIUS, names: PAD_NAMES,   // the game's pads: one per room and Home
@@ -193,7 +193,7 @@ onChange((key) => {
   if (key === 'cues') { applyCues(); captions.say(`View: ${CUE_MODES[cueIndex()] === 'game' ? 'the game' : 'starter scene, ' + CUE_MODES[cueIndex()]}`, 2); }
   if (key === 'shadows') env.setShadows(settings.shadows);
   if (key === 'showFps') fps.el.hidden = !settings.showFps;
-  if (key === 'audio' || key === 'volume') audio.sync();
+  if (key === 'audio' || key === 'volume' || key === 'hum') audio.sync();
   if (key === 'audio') syncSoundBtn();
   if (key === 'contrast') applyContrast();
   if (key === 'seated') seated.onSettingChange();
